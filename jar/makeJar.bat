@@ -1,2 +1,2 @@
-jar cvfm jar\excutable\seitai2.jar jar\MANIFEST.MF jar\seitai\*.class jar\seitai\living\*.class jar\seitai\living\ai\*.class jar\seitai\living\eater\*.class jar\seitailiving\\plant\*.class jar\seitai\world\*.class
+jar cvfm excutable\seitai2.jar seitai\MANIFEST.MF seitai\*.class seitai\living\*.class seitai\living\ai\*.class seitai\living\eater\*.class seitai\living\plant\*.class seitai\world\*.class
 pause
