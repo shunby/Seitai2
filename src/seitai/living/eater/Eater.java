@@ -55,10 +55,10 @@ public class Eater extends Living {
 			g.strokeLine(p.getX() + spine/2 + siz/2, p.getY() - spine/2 - siz/2, p.getX() - spine/2 - siz/2, p.getY() + spine/2 + siz/2);
 		}
 
-		int colorR = (int)(status.get(LivingStatus.ATTACK)/32d * 255);
-		int colorG = (int)(status.get(LivingStatus.SPEED)/32d * 255);
-		int colorB = (int)(status.get(LivingStatus.GUARD)/32d * 255);
-		g.drawImage(image, p.getX() - siz / 2, p.getY() - siz / 2, siz, siz);
+		int colorR = 255;//(int)(status.get(LivingStatus.ATTACK)/32d * 255);
+		int colorG = 255;//(int)(status.get(LivingStatus.SPEED)/32d * 255);
+		int colorB = 255;//(int)(status.get(LivingStatus.GUARD)/32d * 255);
+		g.drawImage(LivingUtil.createChangedImage(image, colorR, colorG, colorB), p.getX() - siz / 2, p.getY() - siz / 2, siz, siz);
 
 
 		g.setFill(Color.YELLOW);
