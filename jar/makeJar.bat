@@ -1,0 +1,1 @@
+jar cvfm excutable\seitai2.jar jar\MANIFEST.MF seitai\*.class seitai\living\*.class seitai\living\ai\*.class seitai\eater\*.class seitai\plant\*.class seitai\world\*.class
