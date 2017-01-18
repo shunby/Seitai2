@@ -117,13 +117,13 @@ public class Main extends Application implements Initializable {
 	 */
 	private void spawnAnimals() {
 		for (int i = 0; i < 200; i++) {
-			Living l = new Eater(rand.nextInt(world.getWIDTH()),
-					rand.nextInt(world.getHEIGHT()), 10000, 10, 10, 10, 20,0);
+			Living l = Eater.getCommonInstance(rand.nextInt(world.getWIDTH()),
+					rand.nextInt(world.getHEIGHT()));
 			world.getLivings().add(l);
 		}
 		for(int i = 0; i < 30; i++){
-			Living l = new FleshEater(rand.nextInt(world.getWIDTH()),
-					rand.nextInt(world.getHEIGHT()), 10000, 50, 10, 10, 20,0);
+			Living l = FleshEater.getCommonInstance(rand.nextInt(world.getWIDTH()),
+					rand.nextInt(world.getHEIGHT()));
 			world.getLivings().add(l);
 		}
 	}

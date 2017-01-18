@@ -14,7 +14,7 @@ public class Plant extends Living {
 
 	public static Image image;
 
-	public Plant(int x, int y, int hp, int guard,
+	protected Plant(int x, int y, int hp, int guard,
 			int size, int spine, int green) {
 		super(x, y, hp, 0, guard, 0, size, spine, green);
 	}

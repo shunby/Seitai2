@@ -52,7 +52,7 @@ public abstract class Living {
 	protected AITable ai;
 
 	//TODO:引数が汚い
-	public Living(int x, int y, int hpmax, int attack, int guard, int speed, int size, int spine, int green) {
+	protected Living(int x, int y, int hpmax, int attack, int guard, int speed, int size, int spine, int green) {
 		pos = new Pos(x, y);
 		tile = Pos.getTile(pos.getX(), pos.getY());
 		status = new LivingStatus(DNA.HP, hpmax, DNA.ATTACK, attack, DNA.GUARD, guard, DNA.SPEED, speed, DNA.SIZE, size,
@@ -247,5 +247,19 @@ public abstract class Living {
 	 */
 	public void setStatus(LivingStatus s) {
 		this.status = s;
+	}
+
+	/**
+	 *	全く新しいインスタンスを生成する
+	 */
+	public static Living getCommonInstance(int x, int y){
+		return new  Living(x, y, 10000, 20, 10, 10, 10, 0, 0) {
+
+			@Override
+			public Living bear(Living l) {
+				// TODO 自動生成されたメソッド・スタブ
+				return null;
+			}
+		};
 	}
 }

@@ -20,7 +20,7 @@ public class FleshEater extends Living {
 
 
 
-	public FleshEater(int x, int y, int hpmax, int attack, int guard, int speed,
+	protected FleshEater(int x, int y, int hpmax, int attack, int guard, int speed,
 			int size, int spine) {
 		super(x, y, hpmax, attack, guard, speed, size, spine, 0);
 		ai.putAI(7, new AIChaseTarget(this, Eater.class));
@@ -75,5 +75,9 @@ public class FleshEater extends Living {
 		return liv;
 	}
 
+
+	public static Living getCommonInstance(int x, int y){
+		return new FleshEater(x, y, 10000, 50, 10, 10, 20, 0);
+	}
 
 }

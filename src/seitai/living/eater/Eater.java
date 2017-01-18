@@ -20,7 +20,7 @@ public class Eater extends Living {
 	public static Image image;
 
 
-	public Eater(int x, int y, int hpmax, int attack, int guard, int speed,
+	protected Eater(int x, int y, int hpmax, int attack, int guard, int speed,
 			int size, int spine) {
 		super(x, y, hpmax, attack, guard, speed, size, spine, 0);
 		ai.putAI(7, new AIEscapeTarget(this, FleshEater.class));
@@ -78,6 +78,10 @@ public class Eater extends Living {
 		Living liv =  new Eater(pos.getX(), pos.getY(), 0, 0,0,0,0,0);
 		liv.setStatus(LivingUtil.makeChildStatus(this.status, l.getStatus()));
 		return liv;
+	}
+
+	public static Living getCommonInstance(int x, int y){
+		return new FleshEater(x, y, 10000, 10, 10, 10, 20, 0);
 	}
 
 }
