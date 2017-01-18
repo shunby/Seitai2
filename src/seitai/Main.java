@@ -155,7 +155,7 @@ public class Main extends Application implements Initializable {
 
 		// 画像等読み込み
 		Tile.image = loadImage("res/image/tile/Tile.png");
-		Living.image = loadImage("res/image/living/Living.png");
+		Living.image = loadImage("res/image/living/Plant.png");
 		Plant.image = loadImage("res/image/living/Plant.png");
 		Eater.image = loadImage("res/image/living/Eater.png");
 		FleshEater.image = loadImage("res/image/living/FleshEater.png");
