@@ -81,7 +81,7 @@ public class Eater extends Living {
 	}
 
 	public static Living getCommonInstance(int x, int y){
-		return new FleshEater(x, y, 10000, 10, 10, 10, 20, 0);
+		return new Eater(x, y, 10000, 10, 10, 10, 20, 0);
 	}
 
 }

@@ -25,8 +25,8 @@ public class Pos {
 	}
 
 	public void setX(int x) {
-		if(x<0)x=world.getWIDTH()-5;
-		if(x>world.getWIDTH() - 1)x=5;
+		if(x<0)x=world.getWIDTH()-20;
+		if(x>world.getWIDTH() - 1)x=20;
 		this.x = x;
 	}
 
@@ -35,8 +35,8 @@ public class Pos {
 	}
 
 	public void setY(int y) {
-		if(y<0)y=world.getHEIGHT()-5;
-		if(y>world.getHEIGHT() - 1)y=5;
+		if(y<0)y=world.getHEIGHT()-20;
+		if(y>world.getHEIGHT() - 1)y=20;
 		this.y = y;
 	}
 
