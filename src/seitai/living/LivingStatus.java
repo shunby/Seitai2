@@ -12,6 +12,9 @@ import java.util.HashMap;
 public class LivingStatus {
 	private DNA dna;
 	private HashMap<Integer, Integer> stats;
+	/**
+	 * HP:体力 LIFE:寿命
+	 */
 	public static final int HP = 0, HP_MAX = 8, ATTACK = 1, GUARD = 2, SPEED = 3, SIZE = 4, SPINE = 5, GREEN = 6, LIFE = 7;
 	public static final int MAX_VAR_NUM = 8;
 	private Integer waste = null;
@@ -37,6 +40,7 @@ public class LivingStatus {
 		set(GREEN, dna.get(DNA.GREEN) + (dna.get(DNA.SIZE) - 20));
 		set(LIFE, dna.get(DNA.LIFE));
 		set(HP, get(HP_MAX) * 2 / 10);
+
 
 	}
 

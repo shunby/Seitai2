@@ -51,6 +51,11 @@ public abstract class Living {
 	 */
 	protected AITable ai;
 
+	/**
+	 * 死んでいるか
+	 */
+	protected boolean isDead;
+
 	//TODO:引数が汚い
 	protected Living(int x, int y, int hpmax, int attack, int guard, int speed, int size, int spine, int green) {
 		pos = new Pos(x, y);
@@ -131,6 +136,7 @@ public abstract class Living {
 		onDeath();
 		world.getLivings().remove(this);
 		tile.getLivings().remove(this);
+		isDead = true;
 	}
 
 	/**
@@ -150,8 +156,10 @@ public abstract class Living {
 		}
 		vx /= length;
 		vy /= length;
-		vx *= ((double) status.get(LivingStatus.SPEED) / 3.0);
-		vy *= ((double) status.get(LivingStatus.SPEED) / 3.0);
+		double speed = status.get(LivingStatus.SPEED);
+		if(speed < 0)speed = 0;
+		vx *= (speed/ 3.0);
+		vy *= (speed / 3.0);
 		pos.setX((int) Math.round(x + vx));
 		pos.setY((int) Math.round(y + vy));
 
@@ -250,6 +258,13 @@ public abstract class Living {
 	}
 
 	/**
+	 * 生成されてからの時間
+	 */
+	public int getAge(){
+		return age;
+	}
+
+	/**
 	 *	全く新しいインスタンスを生成する
 	 */
 	public static Living getCommonInstance(int x, int y){
@@ -261,5 +276,12 @@ public abstract class Living {
 				return null;
 			}
 		};
+	}
+
+	/**
+	 * 死んでいるか
+	 */
+	public boolean isDead(){
+		return isDead;
 	}
 }

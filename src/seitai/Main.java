@@ -2,11 +2,13 @@ package seitai;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,18 +16,23 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Accordion;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import seitai.living.Living;
+import seitai.living.LivingStatus;
 import seitai.living.eater.Eater;
 import seitai.living.eater.FleshEater;
 import seitai.living.plant.Plant;
+import seitai.world.Pos;
 import seitai.world.Tile;
 import seitai.world.World;
 
@@ -46,7 +53,7 @@ public class Main extends Application implements Initializable {
 	private Pane mainPanel;
 
 	@FXML
-	private Accordion toolPanel;
+	private ScrollPane toolPanel;
 
 	@FXML
 	private Canvas canvas;
@@ -59,6 +66,12 @@ public class Main extends Application implements Initializable {
 
 	@FXML
 	private Label timeSpeed;
+
+	@FXML
+	private Label glassesInfo;
+
+	@FXML
+	private ChoiceBox<EditType> editType;
 
 	private static Canvas CANVAS;
 
@@ -85,6 +98,9 @@ public class Main extends Application implements Initializable {
 
 	//時間が進むか
 	private static boolean isTimePass = true;
+
+	//虫眼鏡で選択されている生物
+	private static Living glassesSelectedLiving = null;
 
 	private static double fps = 16;
 
@@ -141,7 +157,17 @@ public class Main extends Application implements Initializable {
 		toolPanel.setOnKeyTyped((KeyEvent event) ->{
 			keyTyped(event);
 		});
-		toolPanel.getPanes().get(0).setExpanded(true);
+
+		editType.itemsProperty().getValue().addAll(FXCollections.observableArrayList(EditType.values()));
+		editType.setOnKeyPressed((KeyEvent event)->{
+			keyPressed(event);
+		});
+		editType.setOnKeyReleased((KeyEvent ev)->{
+			keyReleased(ev);
+		});
+		editType.setOnKeyTyped((KeyEvent ev)->{
+			keyTyped(ev);
+		});
 
 	}
 
@@ -178,20 +204,42 @@ public class Main extends Application implements Initializable {
 		// 画面のクリア
 		graphic.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		world.onUpdate(graphic);
-		updateWindow();
+		updateWindow(graphic);
 	}
 
-	private void updateWindow() {
+	private void updateWindow(GraphicsContext g) {
 		numbers.setText("Grass: " +  world.grass/ 1000 + "k  Eater: " + world.eater + " Flesh: " + world.flesh);
 		int min = (runningTime / 16) / 60;
 		int sec = (runningTime / 16) % 60;
 		time.setText("実行時間: " + runningTime + "フレーム( " + min + "分" + sec + "秒)");
 		timeSpeed.setText("時間速度: " + fps + " ( " + fps / 16 + " 倍速)");
+		if(glassesSelectedLiving != null){
+			Living selected = glassesSelectedLiving;
+			String br = System.getProperty("line.separator");
+			glassesInfo.setText(selected.getClass().getName() + (selected.isDead() ? "_Dead" : "") + br
+					+ "体力:" + selected.getStatus().get(LivingStatus.HP) + "/" + selected.getStatus().get(LivingStatus.HP_MAX) + br
+					+ "年齢:" + selected.getAge() + br
+					+ "寿命:" + selected.getStatus().get(LivingStatus.LIFE) + br
+					+ "攻撃:" + selected.getStatus().get(LivingStatus.ATTACK) + br
+					+ "防御:" + selected.getStatus().get(LivingStatus.GUARD) + br
+					+ "大きさ:" + selected.getStatus().get(LivingStatus.SIZE) + br
+					+ "速さ:" + selected.getStatus().get(LivingStatus.SPEED) + br
+					+ "棘:" + selected.getStatus().get(LivingStatus.SPINE)
+					);
+			cameraPos = Pos.getTile(selected.getPos().getX() - 50 * 7, selected.getPos().getY() - 50 * 5);
+			Pos p = Pos.toWindowPos(selected.getPos().getX(), selected.getPos().getY());
+			g.setFill(Color.PURPLE);
+			g.fillRect(p.getX() - 10, p.getY() - 10, 10, 10);
+		}
 	}
 
 	@FXML
 	protected void keyPressed(KeyEvent ev) {
 		KeyCode key = ev.getCode();
+
+		if(key == KeyCode.UP || key == KeyCode.DOWN || key == KeyCode.RIGHT || key == KeyCode.LEFT)
+		glassesSelectedLiving = null;
+
 		switch (key) {
 		case UP:
 			up = true;
@@ -257,6 +305,49 @@ public class Main extends Application implements Initializable {
 			break;
 		}
 		ev.consume();
+	}
+
+	@FXML
+	protected void onMouseClicked(MouseEvent ev){
+		EditType type = editType.getValue();
+		if(type == null)return;
+		switch(type){
+		case Glasses:
+			setSelectedLiving(ev);
+			break;
+		case Eraser:
+			break;
+		case FleshEater:
+			break;
+		case GrasssEater:
+			break;
+		default:
+			break;
+
+		}
+	}
+
+	private void setSelectedLiving(MouseEvent ev){
+		int x = (int) Math.round(ev.getX());
+		int y = (int) Math.round(ev.getY());
+		x += getCameraPos().getX() * 50;
+		y += getCameraPos().getY() * 50;
+		Tile tile = Pos.getTile(x, y);
+		List<Living> list = tile.getLivings();
+		boolean containsSelected = false;
+		for(int i = 0; i < list.size(); i++){
+			Living l = list.get(i);
+			if(l == glassesSelectedLiving){
+				containsSelected = true;
+				continue;
+				}
+			Pos p = l.getPos();
+			if(Math.abs(p.getX() - x) < 10 && Math.abs(p.getY() - y) < 10){
+				glassesSelectedLiving = l;
+				return;
+			}
+		}
+		glassesSelectedLiving = containsSelected ? glassesSelectedLiving : null;
 	}
 
 	private void moveCam() {
