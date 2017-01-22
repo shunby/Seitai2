@@ -316,10 +316,14 @@ public class Main extends Application implements Initializable {
 			setSelectedLiving(ev);
 			break;
 		case Eraser:
+			deleteLiving(ev, false);
 			break;
 		case FleshEater:
 			break;
 		case GrasssEater:
+			break;
+		case BigEraser:
+			deleteLiving(ev, true);
 			break;
 		default:
 			break;
@@ -342,12 +346,35 @@ public class Main extends Application implements Initializable {
 				continue;
 				}
 			Pos p = l.getPos();
-			if(Math.abs(p.getX() - x) < 10 && Math.abs(p.getY() - y) < 10){
+			if(Math.abs(p.getX() - x) < 20 && Math.abs(p.getY() - y) < 20){
 				glassesSelectedLiving = l;
 				return;
 			}
 		}
 		glassesSelectedLiving = containsSelected ? glassesSelectedLiving : null;
+	}
+
+	private void deleteLiving(MouseEvent ev, boolean deleteAll){
+		int x = (int) Math.round(ev.getX());
+		int y = (int) Math.round(ev.getY());
+		x += getCameraPos().getX() * 50;
+		y += getCameraPos().getY() * 50;
+		Tile tile = Pos.getTile(x, y);
+		List<Living> list = tile.getLivings();
+
+		for(int i = 0; i < list.size(); i++){
+			Living l = list.get(i);
+			Pos p = l.getPos();
+			if(!deleteAll){
+				if(Math.abs(p.getX() - x) < 20 && Math.abs(p.getY() - y) < 20){
+					l.death();
+					return;
+				}
+			}else{
+				l.death();
+			}
+		}
+
 	}
 
 	private void moveCam() {

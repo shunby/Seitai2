@@ -3,7 +3,7 @@ package seitai.world;
 import seitai.Main;
 
 /**
- * World内のある一転の座標を表す
+ * World内のある一点の座標を表す
  *
  */
 public class Pos {
