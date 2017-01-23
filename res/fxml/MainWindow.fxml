@@ -21,8 +21,8 @@
                   <Label fx:id="numbers" prefHeight="25.0" prefWidth="250.0" text="numbers" />
                   <Label fx:id="time" prefHeight="31.0" prefWidth="224.0" text="time" />
                   <Label fx:id="timeSpeed" text="timeSpeed" />
-                  <ChoiceBox fx:id="editType" prefWidth="150.0" />
                   <Label fx:id="glassesInfo" prefHeight="225.0" prefWidth="222.0" text="glasses" />
+                  <ComboBox fx:id="editType" prefWidth="150.0" promptText="edit" />
                   <TabPane fx:id="graphTab" prefHeight="265.0" prefWidth="218.0" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
                       <Tab text="個体数">
@@ -37,6 +37,78 @@
                               </LineChart>
                            </content>
                       </Tab>
+                        <Tab text="平均寿命">
+                           <content>
+                              <LineChart fx:id="lifeChart">
+                                 <xAxis>
+                                    <CategoryAxis label="時間" prefHeight="19.0" prefWidth="152.0" side="BOTTOM" />
+                                 </xAxis>
+                                 <yAxis>
+                                    <NumberAxis label="寿命" prefHeight="122.0" prefWidth="36.0" side="LEFT" />
+                                 </yAxis>
+                              </LineChart>
+                           </content>
+                        </Tab>
+                        <Tab text="平均攻撃">
+                           <content>
+                              <LineChart fx:id="attackChart">
+                                 <xAxis>
+                                    <CategoryAxis label="時間" prefHeight="19.0" prefWidth="152.0" side="BOTTOM" />
+                                 </xAxis>
+                                 <yAxis>
+                                    <NumberAxis label="攻撃力" prefHeight="122.0" prefWidth="36.0" side="LEFT" />
+                                 </yAxis>
+                              </LineChart>
+                           </content>
+                        </Tab>
+                        <Tab text="平均防御">
+                           <content>
+                              <LineChart fx:id="guardChart">
+                                 <xAxis>
+                                    <CategoryAxis label="時間" prefHeight="19.0" prefWidth="152.0" side="BOTTOM" />
+                                 </xAxis>
+                                 <yAxis>
+                                    <NumberAxis label="防御力" prefHeight="122.0" prefWidth="36.0" side="LEFT" />
+                                 </yAxis>
+                              </LineChart>
+                           </content>
+                        </Tab>
+                        <Tab text="平均素早さ">
+                           <content>
+                              <LineChart fx:id="speedChart">
+                                 <xAxis>
+                                    <CategoryAxis label="時間" prefHeight="19.0" prefWidth="152.0" side="BOTTOM" />
+                                 </xAxis>
+                                 <yAxis>
+                                    <NumberAxis label="素早さ" prefHeight="122.0" prefWidth="36.0" side="LEFT" />
+                                 </yAxis>
+                              </LineChart>
+                           </content>
+                        </Tab>
+                        <Tab text="平均大きさ">
+                           <content>
+                              <LineChart fx:id="sizeChart">
+                                 <xAxis>
+                                    <CategoryAxis label="時間" prefHeight="19.0" prefWidth="152.0" side="BOTTOM" />
+                                 </xAxis>
+                                 <yAxis>
+                                    <NumberAxis label="大きさ" prefHeight="122.0" prefWidth="36.0" side="LEFT" />
+                                 </yAxis>
+                              </LineChart>
+                           </content>
+                        </Tab>
+                        <Tab text="平均棘">
+                           <content>
+                              <LineChart fx:id="spineChart">
+                                 <xAxis>
+                                    <CategoryAxis label="時間" prefHeight="19.0" prefWidth="152.0" side="BOTTOM" />
+                                 </xAxis>
+                                 <yAxis>
+                                    <NumberAxis label="棘" prefHeight="122.0" prefWidth="36.0" side="LEFT" />
+                                 </yAxis>
+                              </LineChart>
+                           </content>
+                        </Tab>
                     </tabs>
                   </TabPane>
                </children>

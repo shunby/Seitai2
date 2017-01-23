@@ -56,6 +56,7 @@ public abstract class Living {
 	 */
 	protected boolean isDead;
 
+
 	//TODO:引数が汚い
 	protected Living(int x, int y, int hpmax, int attack, int guard, int speed, int size, int spine, int green) {
 		pos = new Pos(x, y);

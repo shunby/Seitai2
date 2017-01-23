@@ -12,14 +12,17 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Data;
 import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
@@ -75,15 +78,17 @@ public class Main extends Application implements Initializable {
 	private Label glassesInfo;
 
 	@FXML
-	private ChoiceBox<EditType> editType;
+	private ComboBox<EditType> editType;
 
 	@FXML
 	private TabPane graphTab;
 
 	@FXML
 	private LineChart<String, Number> numbersChart;
+	@FXML
+	private LineChart<String, Number> lifeChart, attackChart, guardChart, speedChart, sizeChart, spineChart;
 
-	private XYChart.Series<String, Number> numEater, numFlesh, numGrass;
+	private XYChart.Series<String, Number> numEater, numFlesh, numGrass,lifeEater, lifeFlesh, atkEater, atkFlesh, grdEater, grdFlesh, spdEater, spdFlesh, sizEater, sizFlesh, spnEater, spnFlesh;
 
 	private static Canvas CANVAS;
 
@@ -157,35 +162,52 @@ public class Main extends Application implements Initializable {
 	}
 
 	private void initComponents() {
+
 		graphic = canvas.getGraphicsContext2D();
 		CANVAS = canvas;
+
 		// toolPanelもキーイベントに対応させる
-		toolPanel.setOnKeyPressed((KeyEvent event) -> {
-			keyPressed(event);
-		});
-		toolPanel.setOnKeyReleased((KeyEvent event) -> {
-			keyReleased(event);
-		});
-		toolPanel.setOnKeyTyped((KeyEvent event) ->{
-			keyTyped(event);
-		});
-
-		editType.itemsProperty().getValue().addAll(FXCollections.observableArrayList(EditType.values()));
-		editType.setOnKeyPressed((KeyEvent event)->{
-			keyPressed(event);
-		});
-		editType.setOnKeyReleased((KeyEvent ev)->{
-			keyReleased(ev);
-		});
-		editType.setOnKeyTyped((KeyEvent ev)->{
-			keyTyped(ev);
-		});
-
+		register(toolPanel);
+		register(editType);
+		register(graphTab);
+		editType.requestFocus();
+		editType.getItems().addAll(EditType.values());
+//なぜ使えない
+//		initSerieses("eater", numEater, lifeEater, atkEater, grdEater, spdEater, sizEater, spnEater);
+//
+//		initSerieses("flesheater", numFlesh, lifeFlesh, atkFlesh, grdFlesh, spdFlesh, sizFlesh, spnFlesh);
 		numEater = new Series<>();
+		lifeEater = new Series<>();
+		atkEater = new Series<>();
+		grdEater  = new Series<>();
+		spdEater = new Series<>();
+		sizEater = new Series<>();
+		spnEater = new Series<>();
+
 		numEater.setName("eater");
+		lifeEater.setName("eater");
+		atkEater.setName("eater");
+		grdEater.setName("eater");
+		spdEater.setName("eater");
+		sizEater.setName("eater");
+		spnEater.setName("eater");
 
 		numFlesh = new Series<>();
+		lifeFlesh = new Series<>();
+		atkFlesh = new Series<>();
+		grdFlesh = new Series<>();
+		spdFlesh = new Series<>();
+		sizFlesh = new Series<>();
+		spnFlesh = new Series<>();
+
 		numFlesh.setName("flesheater");
+		lifeFlesh.setName("flesheater");
+		atkFlesh.setName("flesheater");
+		grdFlesh.setName("flesheater");
+		spdFlesh.setName("flesheater");
+		sizFlesh.setName("flesheater");
+		spnFlesh.setName("flesheater");
+
 
 		numGrass = new Series<>();
 		numGrass.setName("grass");
@@ -193,8 +215,47 @@ public class Main extends Application implements Initializable {
 		numbersChart.getData().addAll(numFlesh,numEater, numGrass);
 		numbersChart.setTitle("生物数");
 
+		lifeChart.getData().addAll(lifeFlesh, lifeEater);
+		lifeChart.setTitle("平均寿命");
+
+		attackChart.getData().addAll(atkFlesh, atkEater);
+		attackChart.setTitle("平均攻撃力");
+
+		guardChart.getData().addAll(grdFlesh, grdEater);
+		guardChart.setTitle("平均防御力");
+
+		speedChart.getData().addAll(spdFlesh, spdEater);
+		speedChart.setTitle("平均素早さ");
+
+		sizeChart.getData().addAll(sizFlesh, sizEater);
+		sizeChart.setTitle("平均大きさ");
+
+		spineChart.getData().addAll(spnFlesh, spnEater);
+		spineChart.setTitle("平均棘");
+
 
 	}
+
+	private void register(Node n){
+		n.setOnKeyPressed((KeyEvent event) -> {
+			keyPressed(event);
+		});
+		n.setOnKeyReleased((KeyEvent event) -> {
+			keyReleased(event);
+		});
+		n.setOnKeyTyped((KeyEvent event) ->{
+			keyTyped(event);
+		});
+	}
+//なぜか使えない
+//	private void initSerieses(String name, Series<String, Number>... serieses){
+//		for(int i = 0; i < serieses.length; i++){
+//			serieses[i] = new Series<String, Number>();
+//		}
+//		for(int i = 0; i < serieses.length; i++){
+//			serieses[i].setName(new String(name));
+//		}
+//	}
 
 	private void load() throws IOException {
 		// FXML読み込み
@@ -264,9 +325,27 @@ public class Main extends Application implements Initializable {
 
 	private void updateCharts(){
 		if(isRunning && runningTime % (16 * 5) == 0){
-			numEater.getData().add(new XYChart.Data<String, Number>( Integer.toString(runningTime / 16), world.eater));
+
 			numFlesh.getData().add(new XYChart.Data<String, Number>( Integer.toString(runningTime / 16), world.flesh));
 			numGrass.getData().add(new XYChart.Data<String, Number>( Integer.toString(runningTime / 16), world.grass / 1000));
+
+			lifeEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ?  Eater.allLife / world.eater : 0));
+			lifeFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.flesh > 0 ?  FleshEater.allLife / world.flesh : 0));
+
+			atkEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ?  Eater.allAtk / world.eater : 0));
+			atkFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime/16), world.flesh > 0 ?  FleshEater.allAtk / world.flesh : 0));
+
+			grdEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ?  Eater.allGrd / world.eater : 0));
+			grdFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.flesh > 0 ?  FleshEater.allGrd / world.flesh : 0));
+
+			spdEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ?  Eater.allSpd / world.eater : 0));
+			spdFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.flesh > 0 ?   FleshEater.allSpd / world.flesh : 0));
+
+			sizEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ?  Eater.allSiz / world.eater : 0));
+			sizFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.flesh > 0 ?  FleshEater.allSiz / world.flesh : 0));
+
+			spnEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ?  Eater.allSpn / world.eater : 0));
+			spnFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.flesh > 0 ?  FleshEater.allSpn / world.flesh : 0));
 		}
 	}
 

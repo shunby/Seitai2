@@ -18,6 +18,7 @@ public class FleshEater extends Living {
 
 	public static Image image;
 
+	public static int allLife, allAtk, allGrd, allSpd, allSiz, allSpn;
 
 
 	protected FleshEater(int x, int y, int hpmax, int attack, int guard, int speed,
@@ -29,6 +30,14 @@ public class FleshEater extends Living {
 
 	@Override
 	protected void onUpdate() {
+
+		allAtk += status.get(LivingStatus.ATTACK);
+		allGrd += status.get(LivingStatus.GUARD);
+		allLife += status.get(LivingStatus.LIFE);
+		allSiz += status.get(LivingStatus.SIZE);
+		allSpd += status.get(LivingStatus.SPEED);
+		allSpn += status.get(LivingStatus.SPINE);
+
 		//衝突判定
 		Living col = LivingUtil.getCollide(this);
 		if(col != null && col != this){

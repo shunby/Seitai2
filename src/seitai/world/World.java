@@ -98,6 +98,8 @@ public class World {
 		}
 
 		//Livingの更新
+		Eater.allAtk = Eater.allGrd = Eater.allLife = Eater.allSiz = Eater.allSpd = Eater.allSpn = 0;
+		FleshEater.allAtk = FleshEater.allGrd = FleshEater.allLife = FleshEater.allSiz = FleshEater.allSpd = FleshEater.allSpn = 0;
 		for(int i = 0; i < livings.size(); i++){
 			livings.get(i).update(g);
 		}

@@ -19,6 +19,8 @@ public class Eater extends Living {
 
 	public static Image image;
 
+	public static int allLife, allAtk, allGrd, allSpd, allSiz, allSpn;
+
 
 	protected Eater(int x, int y, int hpmax, int attack, int guard, int speed,
 			int size, int spine) {
@@ -29,7 +31,12 @@ public class Eater extends Living {
 
 	@Override
 	protected void onUpdate() {
-
+		allAtk += status.get(LivingStatus.ATTACK);
+		allGrd += status.get(LivingStatus.GUARD);
+		allLife += status.get(LivingStatus.LIFE);
+		allSiz += status.get(LivingStatus.SIZE);
+		allSpd += status.get(LivingStatus.SPEED);
+		allSpn += status.get(LivingStatus.SPINE);
 
 		status.set(LivingStatus.HP, (int)Math.round(status.get(LivingStatus.HP) + (tile.getGrass() / 100) * (status.get(LivingStatus.ATTACK) /10.0)));
 		tile.setGrass((int) (tile.getGrass() - (int)(tile.getGrass() / 100) * (status.get(LivingStatus.ATTACK) /10.0)));
