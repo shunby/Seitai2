@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import javafx.scene.canvas.*?>
@@ -22,6 +23,22 @@
                   <Label fx:id="timeSpeed" text="timeSpeed" />
                   <ChoiceBox fx:id="editType" prefWidth="150.0" />
                   <Label fx:id="glassesInfo" prefHeight="225.0" prefWidth="222.0" text="glasses" />
+                  <TabPane fx:id="graphTab" prefHeight="265.0" prefWidth="218.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                      <Tab text="個体数">
+                           <content>
+                              <LineChart fx:id="numbersChart">
+                                <xAxis>
+                                  <CategoryAxis label="時間" prefHeight="19.0" prefWidth="152.0" side="BOTTOM" />
+                                </xAxis>
+                                <yAxis>
+                                  <NumberAxis label="個体数" prefHeight="122.0" prefWidth="36.0" side="LEFT" />
+                                </yAxis>
+                              </LineChart>
+                           </content>
+                      </Tab>
+                    </tabs>
+                  </TabPane>
                </children>
             </VBox>
          </content>

@@ -32,7 +32,7 @@ public class Eater extends Living {
 
 
 		status.set(LivingStatus.HP, (int)Math.round(status.get(LivingStatus.HP) + (tile.getGrass() / 100) * (status.get(LivingStatus.ATTACK) /10.0)));
-		tile.setGrass(tile.getGrass() - tile.getGrass() / 100);
+		tile.setGrass((int) (tile.getGrass() - (int)(tile.getGrass() / 100) * (status.get(LivingStatus.ATTACK) /10.0)));
 		//衝突判定
 		Living col = LivingUtil.getCollide(this);
 		if(col != null && col != this){

@@ -68,7 +68,7 @@ public class Tile {
 	}
 
 	protected void onUpdate(){
-		this.grass += 10;
+		this.grass =grass > 10000 ? grass : grass + 10;
 	}
 
 	protected void draw(GraphicsContext g){

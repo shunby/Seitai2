@@ -16,10 +16,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -72,6 +76,14 @@ public class Main extends Application implements Initializable {
 
 	@FXML
 	private ChoiceBox<EditType> editType;
+
+	@FXML
+	private TabPane graphTab;
+
+	@FXML
+	private LineChart<String, Number> numbersChart;
+
+	private XYChart.Series<String, Number> numEater, numFlesh, numGrass;
 
 	private static Canvas CANVAS;
 
@@ -169,6 +181,19 @@ public class Main extends Application implements Initializable {
 			keyTyped(ev);
 		});
 
+		numEater = new Series<>();
+		numEater.setName("eater");
+
+		numFlesh = new Series<>();
+		numFlesh.setName("flesheater");
+
+		numGrass = new Series<>();
+		numGrass.setName("grass");
+
+		numbersChart.getData().addAll(numFlesh,numEater, numGrass);
+		numbersChart.setTitle("生物数");
+
+
 	}
 
 	private void load() throws IOException {
@@ -213,23 +238,41 @@ public class Main extends Application implements Initializable {
 		int sec = (runningTime / 16) % 60;
 		time.setText("実行時間: " + runningTime + "フレーム( " + min + "分" + sec + "秒)");
 		timeSpeed.setText("時間速度: " + fps + " ( " + fps / 16 + " 倍速)");
+		updateCharts();
 		if(glassesSelectedLiving != null){
 			Living selected = glassesSelectedLiving;
+			StringBuilder builder = new StringBuilder();
 			String br = System.getProperty("line.separator");
-			glassesInfo.setText(selected.getClass().getName() + (selected.isDead() ? "_Dead" : "") + br
-					+ "体力:" + selected.getStatus().get(LivingStatus.HP) + "/" + selected.getStatus().get(LivingStatus.HP_MAX) + br
-					+ "年齢:" + selected.getAge() + br
-					+ "寿命:" + selected.getStatus().get(LivingStatus.LIFE) + br
-					+ "攻撃:" + selected.getStatus().get(LivingStatus.ATTACK) + br
-					+ "防御:" + selected.getStatus().get(LivingStatus.GUARD) + br
-					+ "大きさ:" + selected.getStatus().get(LivingStatus.SIZE) + br
-					+ "速さ:" + selected.getStatus().get(LivingStatus.SPEED) + br
-					+ "棘:" + selected.getStatus().get(LivingStatus.SPINE)
+			appendAll(builder, selected.getClass().getName(), (selected.isDead() ? "_Dead" : ""), br,
+					"体力:", selected.getStatus().get(LivingStatus.HP), "/", selected.getStatus().get(LivingStatus.HP_MAX), br
+					, "年齢:",selected.getAge(),br
+					, "寿命:",selected.getStatus().get(LivingStatus.LIFE),br
+					, "攻撃:",selected.getStatus().get(LivingStatus.ATTACK),br
+					, "防御:",selected.getStatus().get(LivingStatus.GUARD),br
+					, "大きさ:",selected.getStatus().get(LivingStatus.SIZE),br
+					, "速さ:",selected.getStatus().get(LivingStatus.SPEED),br
+					, "棘:",selected.getStatus().get(LivingStatus.SPINE)
 					);
+
+			glassesInfo.setText(builder.toString());
 			cameraPos = Pos.getTile(selected.getPos().getX() - 50 * 7, selected.getPos().getY() - 50 * 5);
 			Pos p = Pos.toWindowPos(selected.getPos().getX(), selected.getPos().getY());
 			g.setFill(Color.PURPLE);
 			g.fillRect(p.getX() - 10, p.getY() - 10, 10, 10);
+		}
+	}
+
+	private void updateCharts(){
+		if(isRunning && runningTime % (16 * 5) == 0){
+			numEater.getData().add(new XYChart.Data<String, Number>( Integer.toString(runningTime / 16), world.eater));
+			numFlesh.getData().add(new XYChart.Data<String, Number>( Integer.toString(runningTime / 16), world.flesh));
+			numGrass.getData().add(new XYChart.Data<String, Number>( Integer.toString(runningTime / 16), world.grass / 1000));
+		}
+	}
+
+	private void appendAll(StringBuilder builder, Object... strings){
+		for(Object str : strings){
+			builder.append(str);
 		}
 	}
 
@@ -291,7 +334,7 @@ public class Main extends Application implements Initializable {
 		case "g":    //半数絶滅
 			for(int i = 0; i < world.getLivings().size(); i++){
 				if(rand.nextBoolean()){
-					world.getLivings().get(i).death();
+					world.getLivings().get(i).getStatus().set(LivingStatus.HP, -1000000000);
 				}
 			}
 			break;
@@ -319,8 +362,18 @@ public class Main extends Application implements Initializable {
 			deleteLiving(ev, false);
 			break;
 		case FleshEater:
+			int x = (int)ev.getX();
+			int y = (int)ev.getY();
+			x += getCameraPos().getX() * 50;
+			y += getCameraPos().getY() * 50;
+			world.getLivings().add(FleshEater.getCommonInstance(x, y));
 			break;
 		case GrasssEater:
+			x = (int)ev.getX();
+			y = (int)ev.getY();
+			x += getCameraPos().getX() * 50;
+			y += getCameraPos().getY() * 50;
+			world.getLivings().add(Eater.getCommonInstance(x, y));
 			break;
 		case BigEraser:
 			deleteLiving(ev, true);
@@ -367,11 +420,11 @@ public class Main extends Application implements Initializable {
 			Pos p = l.getPos();
 			if(!deleteAll){
 				if(Math.abs(p.getX() - x) < 20 && Math.abs(p.getY() - y) < 20){
-					l.death();
+					l.getStatus().set(LivingStatus.HP, -100000000);
 					return;
 				}
 			}else{
-				l.death();
+				l.getStatus().set(LivingStatus.HP, -1000000000);
 			}
 		}
 
