@@ -15,6 +15,7 @@ public class AIChaseTarget extends AI{
 	public AIChaseTarget(Living l, Class<? extends Living> target) {
 		super(l);
 		this.targetClass = target;
+		setToolTip("追跡" + target.getSimpleName());
 	}
 
 	@Override
@@ -26,6 +27,15 @@ public class AIChaseTarget extends AI{
 	@Override
 	public void run() {
 		living.go(target.getPos());
+	}
+
+	@Override
+	public AI getCopyWithNewOwner(Living liv) {
+		return new AIChaseTarget(liv, targetClass);
+	}
+
+	public static AI getRandomAI(Living liv) {
+		return new AIChaseTarget(liv, LivingUtil.getRandomLivingClass());
 	}
 
 }

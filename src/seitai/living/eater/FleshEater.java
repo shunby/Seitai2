@@ -80,7 +80,8 @@ public class FleshEater extends Living {
 	@Override
 	public Living bear(Living l) {
 		Living liv =  new FleshEater(pos.getX(), pos.getY(), 0, 0,0,0,0,0);
-		liv.setStatus(LivingUtil.makeChildStatus(this.status, l.getStatus()));
+		liv.setStatus(LivingUtil.makeChildStatus(this, l));
+		LivingUtil.getChildAI(this, l, liv);
 		return liv;
 	}
 

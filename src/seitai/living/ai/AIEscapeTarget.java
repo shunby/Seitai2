@@ -17,6 +17,7 @@ public class AIEscapeTarget extends AI {
 	public AIEscapeTarget(Living l, Class<? extends Living> target) {
 		super(l);
 		this.targetClass = target;
+		setToolTip("逃走" + target.getSimpleName());
 	}
 
 	@Override
@@ -33,6 +34,15 @@ public class AIEscapeTarget extends AI {
 	public void run() {
 		chaseTime--;
 		living.escape(target.getPos());
+	}
+
+	@Override
+	public AI getCopyWithNewOwner(Living liv) {
+		return new AIEscapeTarget(living, targetClass);
+	}
+
+	public static AI getRandomAI(Living liv) {
+		return new AIEscapeTarget(liv, LivingUtil.getRandomLivingClass());
 	}
 
 }

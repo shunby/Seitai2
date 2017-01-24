@@ -12,6 +12,14 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.image.WritablePixelFormat;
 import seitai.Main;
+import seitai.living.ai.AI;
+import seitai.living.ai.AIChaseTarget;
+import seitai.living.ai.AIEscapeTarget;
+import seitai.living.ai.AIRandomMove;
+import seitai.living.ai.AITable;
+import seitai.living.ai.AIWait;
+import seitai.living.eater.Eater;
+import seitai.living.eater.FleshEater;
 import seitai.world.Pos;
 import seitai.world.Tile;
 
@@ -97,8 +105,11 @@ public class LivingUtil {
 	 * @param l2
 	 * @return
 	 */
-	public static LivingStatus makeChildStatus(LivingStatus l1, LivingStatus l2){
+	public static LivingStatus makeChildStatus(Living liv1, Living liv2){
     	LivingStatus child;
+
+    	LivingStatus l1 = liv1.getStatus();
+    	LivingStatus l2 = liv2.getStatus();
 
     	Random rand = Main.getRandom();
     	int changeProbability = 10;
@@ -135,6 +146,41 @@ public class LivingUtil {
     			);
     	return child;
     }
+
+	public static void getChildAI(Living liv1, Living liv2, Living child){
+		AITable childAI = child.getAI();
+
+		AITable ai1 = liv1.getAI();
+		AITable ai2 = liv2.getAI();
+
+		Random rand = Main.getRandom();
+    	int changeProbability = 10;
+
+    	for(int priority = 1; priority <= 10; priority++){
+    		if(rand.nextInt(100) < changeProbability){
+    			AI ai =getRandomAI(child);
+    			childAI.putAI(priority, ai);
+    		}else if(rand.nextBoolean()){
+    			System.out.println(ai1.getAI(3));
+    			childAI.putAI(priority, ai1.getAI(priority).getCopyWithNewOwner(child));
+    		}else{
+    			childAI.putAI(priority, ai2.getAI(priority).getCopyWithNewOwner(child));
+    		}
+    	}
+    	child.setAI(childAI);
+
+	}
+
+	public static AI getRandomAI(Living liv){
+		Random rand = Main.getRandom();
+		switch(rand.nextInt(3)){
+		case 3:return AIWait.getRandomAI(liv);
+		case 1:return AIEscapeTarget.getRandomAI(liv);
+		case 2:return AIChaseTarget.getRandomAI(liv);
+		case 0:return AIRandomMove.getRandomAI(liv);
+		}
+		return null;
+	}
 
     private static int getChangedValue(int status1, int status2, boolean isSuddenChange, int normalChangeRange, int suddenChangeRange){
     	Random rand = Main.getRandom();
@@ -243,6 +289,17 @@ public class LivingUtil {
 			if(Pos.getDistance(living.getPos(), l.getPos()) > 150)l = null;
 		}
 		return l;
+	}
+
+	public static Class<? extends Living> getRandomLivingClass(){
+		Random rand =Main.getRandom();
+		switch(rand.nextInt(2)){
+		case 0:
+			return Eater.class;
+		case 1:
+			return FleshEater.class;
+		}
+		return null;
 	}
 
 }

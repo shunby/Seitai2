@@ -7,6 +7,7 @@ import seitai.living.Living;
 import seitai.world.World;
 
 public abstract class AI {
+
 	/**
 	 * このAIを持つLiving
 	 */
@@ -21,6 +22,8 @@ public abstract class AI {
 	 * livingのworld
 	 */
 	protected World world;
+
+	private String toolTip;
 
 	public AI(Living l){
 		living = l;
@@ -38,4 +41,19 @@ public abstract class AI {
 	 * このAIの処理を実行する
 	 */
 	public abstract void run();
+
+	/**
+	 * 違うLiivingで同じ種類のAIを作る
+	 */
+	public abstract AI getCopyWithNewOwner(Living liv);
+
+	@Override
+	public String toString() {
+		return toolTip;
+	}
+
+	protected void setToolTip(String str){
+		toolTip = str;
+	}
+
 }

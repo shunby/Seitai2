@@ -14,6 +14,7 @@ public class AIRandomMove extends AI {
 
 	public AIRandomMove(Living l) {
 		super(l);
+		setToolTip("ランダム移動");
 	}
 
 	@Override
@@ -27,6 +28,15 @@ public class AIRandomMove extends AI {
 			targetPos = new Pos(living.getPos().getX() + rand.nextInt(501) - 250, living.getPos().getY() + rand.nextInt(501) - 250);
 		}
 		living.go(targetPos.getX(), targetPos.getY());
+	}
+
+	@Override
+	public AI getCopyWithNewOwner(Living liv) {
+		return new AIRandomMove(liv);
+	}
+
+	public static AI getRandomAI(Living liv) {
+		return new AIRandomMove(liv);
 	}
 
 }

@@ -66,7 +66,7 @@ public abstract class Living {
 		world = World.getInstance();
 		rand = Main.getRandom();
 		tile.getLivings().add(this);
-		ai = new AITable();
+		ai = new AITable(this);
 	}
 	/**
 	 * 位置フレームに一回、World#onUpdate(GraphicContext){@link seitai.world.World#onUpdate(GraphicsContext)}から呼び出される
@@ -263,6 +263,14 @@ public abstract class Living {
 	 */
 	public int getAge(){
 		return age;
+	}
+
+	public AITable getAI(){
+		return ai;
+	}
+
+	public void setAI(AITable table){
+		this.ai = table;
 	}
 
 	/**

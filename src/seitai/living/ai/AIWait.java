@@ -10,6 +10,7 @@ public class AIWait extends AI {
 
 	public AIWait(Living l) {
 		super(l);
+		setToolTip("待機");
 	}
 
 	@Override
@@ -20,5 +21,14 @@ public class AIWait extends AI {
 	@Override
 	public void run() {
 		// 何もしないのがこのクラスの使命
+	}
+
+	@Override
+	public AI getCopyWithNewOwner(Living liv) {
+		return new AIWait(liv);
+	}
+
+	public static AI getRandomAI(Living liv) {
+		return new AIWait(liv);
 	}
 }

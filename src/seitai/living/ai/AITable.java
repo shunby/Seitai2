@@ -2,6 +2,8 @@ package seitai.living.ai;
 
 import java.util.HashMap;
 
+import seitai.living.Living;
+
 /**
  * AIを管理するためのクラス
  * @author 春太朗
@@ -13,13 +15,17 @@ public class AITable {
 	 */
 	private HashMap<Integer, AI> aiList;
 
+	private Living living;
+
 	public static final int AI_MAX = 10;
 
-	public AITable(){
+	public AITable(Living liv){
 		aiList = new HashMap<>();
-
+		living = liv;
 		//配列を初期化
-		for(int i = 1; i++ > AI_MAX; aiList.put(i, null));
+		for(int i = 1; i <= AI_MAX; i++){
+			aiList.put(i, new AINone(living));
+		}
 	}
 
 	/**
@@ -41,7 +47,7 @@ public class AITable {
 	 * 必ず優先度の大きいものから実行可能かの判定がされる
 	 */
 	public void update() {
-		for(int i = 10; i > 0; i--){
+		for(int i = AI_MAX; i > 0; i--){
 			AI ai = aiList.get(i);
 			if(ai != null && ai.isRunnable()){
 				ai.run();

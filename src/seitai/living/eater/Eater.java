@@ -38,8 +38,8 @@ public class Eater extends Living {
 		allSpd += status.get(LivingStatus.SPEED);
 		allSpn += status.get(LivingStatus.SPINE);
 
-		status.set(LivingStatus.HP, (int)Math.round(status.get(LivingStatus.HP) + (tile.getGrass() / 100) * (status.get(LivingStatus.ATTACK) /10.0)));
-		tile.setGrass((int) (tile.getGrass() - (int)(tile.getGrass() / 100) * (status.get(LivingStatus.ATTACK) /10.0)));
+		status.set(LivingStatus.HP, (int)Math.round(status.get(LivingStatus.HP) + (tile.getGrass() / 100) * (status.get(LivingStatus.ATTACK) /20.0)));
+		tile.setGrass((int) (tile.getGrass() - (int)(tile.getGrass() / 100) * (status.get(LivingStatus.ATTACK) /20.0)));
 		//衝突判定
 		Living col = LivingUtil.getCollide(this);
 		if(col != null && col != this){
@@ -83,7 +83,8 @@ public class Eater extends Living {
 	@Override
 	public Living bear(Living l) {
 		Living liv =  new Eater(pos.getX(), pos.getY(), 0, 0,0,0,0,0);
-		liv.setStatus(LivingUtil.makeChildStatus(this.status, l.getStatus()));
+		liv.setStatus(LivingUtil.makeChildStatus(this, l));
+		LivingUtil.getChildAI(this, l, liv);
 		return liv;
 	}
 

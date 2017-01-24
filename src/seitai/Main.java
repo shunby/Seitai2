@@ -36,6 +36,9 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import seitai.living.Living;
 import seitai.living.LivingStatus;
+import seitai.living.ai.AI;
+import seitai.living.ai.AINone;
+import seitai.living.ai.AITable;
 import seitai.living.eater.Eater;
 import seitai.living.eater.FleshEater;
 import seitai.living.plant.Plant;
@@ -52,6 +55,9 @@ public class Main extends Application implements Initializable {
 
 	// GUI関係
 	private Parent root;
+
+	@FXML
+	private SplitPane parentSplit;
 
 	@FXML
 	private SplitPane split;
@@ -170,6 +176,7 @@ public class Main extends Application implements Initializable {
 		register(toolPanel);
 		register(editType);
 		register(graphTab);
+		register(parentSplit);
 		editType.requestFocus();
 		editType.getItems().addAll(EditType.values());
 //なぜ使えない
@@ -312,8 +319,15 @@ public class Main extends Application implements Initializable {
 					, "防御:",selected.getStatus().get(LivingStatus.GUARD),br
 					, "大きさ:",selected.getStatus().get(LivingStatus.SIZE),br
 					, "速さ:",selected.getStatus().get(LivingStatus.SPEED),br
-					, "棘:",selected.getStatus().get(LivingStatus.SPINE)
+					, "棘:",selected.getStatus().get(LivingStatus.SPINE),br
+					, "ai: ", br
 					);
+			for(int i = AITable.AI_MAX; i > 0; i--){
+				AI ai = selected.getAI().getAI(i);
+				if(!(ai instanceof AINone))
+					appendAll(builder,
+						i, ":" , ai.toString(), br);
+			}
 
 			glassesInfo.setText(builder.toString());
 			cameraPos = Pos.getTile(selected.getPos().getX() - 50 * 7, selected.getPos().getY() - 50 * 5);
@@ -327,25 +341,26 @@ public class Main extends Application implements Initializable {
 		if(isRunning && runningTime % (16 * 5) == 0){
 
 			numFlesh.getData().add(new XYChart.Data<String, Number>( Integer.toString(runningTime / 16), world.flesh));
+			numEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater));
 			numGrass.getData().add(new XYChart.Data<String, Number>( Integer.toString(runningTime / 16), world.grass / 1000));
 
-			lifeEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ?  Eater.allLife / world.eater : 0));
-			lifeFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.flesh > 0 ?  FleshEater.allLife / world.flesh : 0));
+			lifeEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ? (double) Eater.allLife / (double)world.eater : 0.0));
+			lifeFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.flesh > 0 ?  (double)FleshEater.allLife / (double)world.flesh : 0.0));
 
-			atkEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ?  Eater.allAtk / world.eater : 0));
-			atkFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime/16), world.flesh > 0 ?  FleshEater.allAtk / world.flesh : 0));
+			atkEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ?  (double)Eater.allAtk / (double)world.eater : 0.0));
+			atkFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime/16), world.flesh > 0 ?  (double)FleshEater.allAtk / (double)world.flesh : 0.0));
 
-			grdEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ?  Eater.allGrd / world.eater : 0));
-			grdFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.flesh > 0 ?  FleshEater.allGrd / world.flesh : 0));
+			grdEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ?  (double)Eater.allGrd / (double)world.eater : 0.0));
+			grdFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.flesh > 0 ?  (double)FleshEater.allGrd / (double)world.flesh : 0.0));
 
-			spdEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ?  Eater.allSpd / world.eater : 0));
-			spdFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.flesh > 0 ?   FleshEater.allSpd / world.flesh : 0));
+			spdEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ? (double) Eater.allSpd / (double)world.eater : 0.0));
+			spdFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.flesh > 0 ?  (double) FleshEater.allSpd / (double)world.flesh : 0.0));
 
-			sizEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ?  Eater.allSiz / world.eater : 0));
-			sizFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.flesh > 0 ?  FleshEater.allSiz / world.flesh : 0));
+			sizEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ?  (double)Eater.allSiz / (double)world.eater : 0.0));
+			sizFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.flesh > 0 ?  (double)FleshEater.allSiz / (double)world.flesh : 0.0));
 
-			spnEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ?  Eater.allSpn / world.eater : 0));
-			spnFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.flesh > 0 ?  FleshEater.allSpn / world.flesh : 0));
+			spnEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ?  (double)Eater.allSpn / (double)world.eater : 0.0));
+			spnFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.flesh > 0 ?  (double)FleshEater.allSpn / (double)world.flesh : 0.0));
 		}
 	}
 
