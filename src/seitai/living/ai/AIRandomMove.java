@@ -24,7 +24,7 @@ public class AIRandomMove extends AI {
 
 	@Override
 	public void run() {
-		if(targetPos == null || rand.nextInt(50) == 0){
+		if(targetPos == null || Pos.getDistance(living.getPos(), targetPos) < 20 || rand.nextInt(50) == 0){
 			targetPos = new Pos(living.getPos().getX() + rand.nextInt(501) - 250, living.getPos().getY() + rand.nextInt(501) - 250);
 		}
 		living.go(targetPos.getX(), targetPos.getY());

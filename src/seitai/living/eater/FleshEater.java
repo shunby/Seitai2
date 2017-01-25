@@ -24,7 +24,7 @@ public class FleshEater extends Living {
 	protected FleshEater(int x, int y, int hpmax, int attack, int guard, int speed,
 			int size, int spine) {
 		super(x, y, hpmax, attack, guard, speed, size, spine, 0);
-		ai.putAI(7, new AIChaseTarget(this, Eater.class));
+		//ai.putAI(7, new AIChaseTarget(this, Eater.class));
 		ai.putAI(5, new AIRandomMove(this));
 	}
 

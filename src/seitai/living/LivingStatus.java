@@ -31,15 +31,32 @@ public class LivingStatus {
 
 		dna = new DNA(status);
 
-		set(HP_MAX, dna.get(DNA.HP) + (dna.get(DNA.SIZE) - 20) * 100);
-		set(ATTACK, dna.get(DNA.ATTACK) + (dna.get(DNA.SIZE) - 20) * 3);
-		set(GUARD, dna.get(DNA.GUARD) + (dna.get(DNA.SIZE) - 20) * 3);
-		set(SPEED, dna.get(DNA.SPEED) + (dna.get(DNA.SIZE) - 20) * -1);
-		set(SIZE, dna.get(DNA.SIZE) + (dna.get(DNA.SPINE)));
-		set(SPINE, dna.get(DNA.SPINE));
-		set(GREEN, dna.get(DNA.GREEN) + (dna.get(DNA.SIZE) - 20));
-		set(LIFE, dna.get(DNA.LIFE));
-		set(HP, get(HP_MAX) * 2 / 10);
+		int hpmax = dna.get(DNA.HP) + (dna.get(DNA.SIZE) - 20) * 100 ;
+		set(HP_MAX, hpmax < 1 ? 1 : hpmax);
+
+		int atk = dna.get(DNA.ATTACK) + (dna.get(DNA.SIZE) - 20) * 3;
+		set(ATTACK, atk < 0 ? 0 : atk);
+
+		int grd = dna.get(DNA.GUARD) + (dna.get(DNA.SIZE) - 20) * 3;
+		set(GUARD, grd < 0 ? 0 : grd);
+
+		int spd = dna.get(DNA.SPEED) + (dna.get(DNA.SIZE) - 20) * -1;
+		set(SPEED, spd < 2 ? 2 : spd);
+
+		int siz = dna.get(DNA.SIZE) + (dna.get(DNA.SPINE));
+		set(SIZE, siz < 1 ? 1 : siz);
+
+		int spn = dna.get(DNA.SPINE);
+		set(SPINE, spn < 0 ? 0 : spn);
+
+		int grn = dna.get(DNA.GREEN) + (dna.get(DNA.SIZE) - 20);
+		set(GREEN, grn < 0 ? 0 : grn);
+
+		int life = dna.get(DNA.LIFE) + (dna.get(DNA.SIZE) - 20) * 70;
+		set(LIFE, life < 1 ? 1 : life);
+
+		int hp = get(HP_MAX) * 2 / 10;
+		set(HP, hp < 1 ? 1 : hp);
 
 
 	}

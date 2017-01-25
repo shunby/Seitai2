@@ -57,7 +57,6 @@ public abstract class Living {
 	protected boolean isDead;
 
 
-	//TODO:引数が汚い
 	protected Living(int x, int y, int hpmax, int attack, int guard, int speed, int size, int spine, int green) {
 		pos = new Pos(x, y);
 		tile = Pos.getTile(pos.getX(), pos.getY());
@@ -77,6 +76,8 @@ public abstract class Living {
 	 * @param g 画面描画用のGraphicContext
 	 */
 	public void update(GraphicsContext g) {
+		if(isDead)return;
+
 		if (Pos.isinWindow(pos.getX(), pos.getY()))
 			draw(g);
 		if (!Main.isTimePass())
@@ -91,10 +92,11 @@ public abstract class Living {
 		status.set(LivingStatus.HP, status.get(LivingStatus.HP) - status.getWaste());
 
 		int spine = status.get(LivingStatus.SPINE);
-		if (spine != 0) {
+		if (spine > 0) {
 			Living col = LivingUtil.getCollide(this);
 			if (col != null && col != this) {
-				col.getStatus().set(LivingStatus.HP, col.getStatus().get(LivingStatus.HP) - spine);
+				spine -= col.getStatus().get(LivingStatus.GUARD);
+				if(spine > 0)col.getStatus().set(LivingStatus.HP, col.getStatus().get(LivingStatus.HP) - spine);
 			}
 		}
 

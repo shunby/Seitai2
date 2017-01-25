@@ -101,6 +101,11 @@ public class World {
 		Eater.allAtk = Eater.allGrd = Eater.allLife = Eater.allSiz = Eater.allSpd = Eater.allSpn = 0;
 		FleshEater.allAtk = FleshEater.allGrd = FleshEater.allLife = FleshEater.allSiz = FleshEater.allSpd = FleshEater.allSpn = 0;
 		for(int i = 0; i < livings.size(); i++){
+			Living l = livings.get(i);
+			if(l.isDead()){
+				livings.remove(i);
+				continue;
+			}
 			livings.get(i).update(g);
 		}
 	}
