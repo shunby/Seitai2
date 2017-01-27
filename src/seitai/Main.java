@@ -42,6 +42,7 @@ import seitai.living.ai.AITable;
 import seitai.living.eater.Eater;
 import seitai.living.eater.FleshEater;
 import seitai.living.plant.Plant;
+import seitai.living.spawner.Spawner;
 import seitai.world.Pos;
 import seitai.world.Tile;
 import seitai.world.World;
@@ -278,6 +279,7 @@ public class Main extends Application implements Initializable {
 		Plant.image = loadImage("res/image/living/Plant.png");
 		Eater.image = loadImage("res/image/living/Eater.png");
 		FleshEater.image = loadImage("res/image/living/FleshEater.png");
+		Spawner.image = loadImage("res/image/living/Spawner.png");
 	}
 
 	private Image loadImage(String url) {
@@ -472,9 +474,23 @@ public class Main extends Application implements Initializable {
 		case BigEraser:
 			deleteLiving(ev, true);
 			break;
-		default:
+		case SpawnerE:
+			x = (int)ev.getX();
+			y = (int)ev.getY();
+			x += getCameraPos().getX() * 50;
+			y += getCameraPos().getY() * 50;
+			Spawner espawner = new Spawner(x, y, 5, Eater.class);
+			world.getLivings().add(espawner);
 			break;
-
+		case SpawnerFE:
+			x = (int)ev.getX();
+			y = (int)ev.getY();
+			x += getCameraPos().getX() * 50;
+			y += getCameraPos().getY() * 50;
+			Spawner fespawner = new Spawner(x, y, 5, FleshEater.class);
+			world.getLivings().add(fespawner);
+			break;
+		default:
 		}
 	}
 

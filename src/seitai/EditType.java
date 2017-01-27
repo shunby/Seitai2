@@ -1,5 +1,5 @@
 package seitai;
 
 public enum EditType {
-	Glasses, GrasssEater, FleshEater, Eraser, BigEraser
+	Glasses, GrasssEater, FleshEater, SpawnerE, SpawnerFE, Eraser, BigEraser
 }
