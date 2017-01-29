@@ -50,6 +50,8 @@ public class Graph {
 		double se_increase = 0.00075d;
 		double se_decrease = 0.00025d;
 
+		System.out.println("  ge  |  fe   |   se ");
+
 		for(time = 0; time <= 1000; time++){
 			double ga = ge_increase * ge_num - ge_decrease * ge_num * fe_num;
 			double fa = fe_increase * ge_num * fe_num - fe_decrease * fe_num - fe_decrease_2 * fe_num * se_num;
@@ -59,9 +61,9 @@ public class Graph {
 			ge_num += ga;
 			fe_num += fa;
 			se_num += sa;
-			ge_num = ge_num < 10 ? 10 : ge_num;
-			se_num = se_num < 10 ? 10 : se_num;
-			fe_num = fe_num < 10 ? 10 : fe_num;
+			ge_num = ge_num < 0 ? 0 : ge_num;
+			se_num = se_num < 0 ? 0 : se_num;
+			fe_num = fe_num < 0 ? 0 : fe_num;
 
 			g.setColor(Color.yellow);
 			g.drawOval(time, 1000 - (int) (ge_num), r, r);
@@ -71,6 +73,8 @@ public class Graph {
 
 			g.setColor(Color.blue);
 			g.drawOval(time, 1000 - (int) (se_num), r, r);
+
+			System.out.printf("%05d | %05d | %05d\n", (int)ge_num, (int)fe_num, (int)se_num);
 
 		}
 
