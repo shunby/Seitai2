@@ -7,6 +7,7 @@ import seitai.living.Living;
 import seitai.living.LivingStatus;
 import seitai.living.LivingUtil;
 import seitai.living.ai.AIChaseTarget;
+import seitai.living.ai.AIEscapeTarget;
 import seitai.living.ai.AIRandomMove;
 import seitai.world.Pos;
 
@@ -25,6 +26,8 @@ public class FleshEater extends Living {
 			int size, int spine) {
 		super(x, y, hpmax, attack, guard, speed, size, spine, 0);
 		//ai.putAI(7, new AIChaseTarget(this, Eater.class));
+		ai.putAI(7, new AIEscapeTarget(this, SuperEater.class));
+		ai.putAI(6, new AIChaseTarget(this, SuperEater.class));
 		ai.putAI(5, new AIRandomMove(this));
 	}
 

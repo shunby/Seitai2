@@ -8,6 +8,7 @@ import javafx.scene.paint.Color;
 import seitai.living.Living;
 import seitai.living.eater.Eater;
 import seitai.living.eater.FleshEater;
+import seitai.living.eater.SuperEater;
 import seitai.living.plant.Plant;
 
 public class World {
@@ -35,7 +36,7 @@ public class World {
 	/**
 	 * 生物数
 	 */
-	public int plant, eater, flesh;
+	public int plant, eater, flesh, superE;
 	/**
 	 * 植物数(特別数が多いのでこれだけlong型)
 	 */
@@ -53,6 +54,7 @@ public class World {
 				if(e instanceof Plant)plant++;
 				if(e instanceof Eater)eater++;
 				if(e instanceof FleshEater)flesh++;
+				if(e instanceof SuperEater)superE++;
 				return super.add(e);
 			}
 
@@ -61,6 +63,7 @@ public class World {
 				if(e instanceof Plant)plant--;
 				if(e instanceof Eater)eater--;
 				if(e instanceof FleshEater)flesh--;
+				if(e instanceof SuperEater)superE--;
 				return super.remove(e);
 			}
 		};
@@ -100,6 +103,8 @@ public class World {
 		//Livingの更新
 		Eater.allAtk = Eater.allGrd = Eater.allLife = Eater.allSiz = Eater.allSpd = Eater.allSpn = 0;
 		FleshEater.allAtk = FleshEater.allGrd = FleshEater.allLife = FleshEater.allSiz = FleshEater.allSpd = FleshEater.allSpn = 0;
+		SuperEater.allAtk = SuperEater.allGrd = SuperEater.allLife = SuperEater.allSiz = SuperEater.allSpd = SuperEater.allSpn = 0;
+
 		for(int i = 0; i < livings.size(); i++){
 			Living l = livings.get(i);
 			if(l.isDead()){
