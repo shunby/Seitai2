@@ -1,5 +1,6 @@
 package seitai.living;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
@@ -9,7 +10,7 @@ import java.util.HashMap;
  *このクラスの情報は基本的に変わらない
  *@see seitai.living.DNA
  */
-public class LivingStatus {
+public class LivingStatus implements Serializable {
 	private DNA dna;
 	private HashMap<Integer, Integer> stats;
 	/**

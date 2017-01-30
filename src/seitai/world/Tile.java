@@ -1,6 +1,8 @@
 package seitai.world;
 
 import javafx.scene.paint.Color;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -15,7 +17,7 @@ import seitai.living.LivingStatus;
  * ワールド上のタイルを表す
  * 世界は広いため、分割して処理をすることで速度を上げる
  */
-public class Tile {
+public class Tile implements Serializable {
 
 	public static Image image;
 

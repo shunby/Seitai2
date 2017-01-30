@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.chart.*?>
 <?import javafx.scene.image.*?>
@@ -118,6 +119,9 @@
                               </Tab>
                            </tabs>
                         </TabPane>
+                        <TextField fx:id="txtFieldWorld" text="C:\seitai\newWorld.seitai" />
+                        <Button mnemonicParsing="false" onAction="#saveWorld" prefHeight="25.0" prefWidth="217.0" text="Save World" />
+                        <Button mnemonicParsing="false" onAction="#loadWorld" prefHeight="25.0" prefWidth="222.0" text="Load World" />
                      </children>
                   </VBox>
                </content>

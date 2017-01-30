@@ -1,5 +1,6 @@
 package seitai.living;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -14,7 +15,7 @@ import seitai.world.World;
 /**
  * ある一匹の生物を表す
  */
-public abstract class Living {
+public abstract class Living implements Serializable {
 	public static Image image;
 	/**
 	 *  現在いるタイル

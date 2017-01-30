@@ -1,5 +1,6 @@
 package seitai.living;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
@@ -9,7 +10,7 @@ import java.util.HashMap;
  *このクラスの情報は基本的に変わらない
  *@see seitai.living.LivingStatus
  */
-public class DNA {
+public class DNA  implements Serializable{
 	private HashMap<Integer, Integer> stats;
 	public static final int HP = 0, ATTACK = 1, GUARD = 2, SPEED = 3, SIZE = 4, SPINE = 5, GREEN = 6, LIFE = 7;
 	public static final int MAX_VAR_NUM = 7;

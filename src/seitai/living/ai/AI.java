@@ -1,12 +1,13 @@
 package seitai.living.ai;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import seitai.Main;
 import seitai.living.Living;
 import seitai.world.World;
 
-public abstract class AI {
+public abstract class AI implements Serializable  {
 
 	/**
 	 * このAIを持つLiving

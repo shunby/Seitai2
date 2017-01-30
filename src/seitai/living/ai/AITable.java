@@ -1,5 +1,6 @@
 package seitai.living.ai;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 import seitai.living.Living;
@@ -9,7 +10,7 @@ import seitai.living.Living;
  * @author 春太朗
  *
  */
-public class AITable {
+public class AITable implements Serializable {
 	/**
 	 * 優先度はaiListのキーの値が大きい順にAI_MAXから1までになっている
 	 */

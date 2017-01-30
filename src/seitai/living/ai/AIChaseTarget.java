@@ -1,5 +1,7 @@
 package seitai.living.ai;
 
+import java.io.Serializable;
+
 import seitai.living.Living;
 import seitai.living.LivingUtil;
 

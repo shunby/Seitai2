@@ -1,7 +1,10 @@
 package seitai.world;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.sun.xml.internal.ws.developer.Serialization;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -11,7 +14,8 @@ import seitai.living.eater.FleshEater;
 import seitai.living.eater.SuperEater;
 import seitai.living.plant.Plant;
 
-public class World {
+
+public class World implements Serializable{
 
 	/**
 	 * 唯一のインスタンス
@@ -123,6 +127,11 @@ public class World {
 	 */
 	public static World init(int width, int height){
 		theWorld = new World(width, height);
+		return theWorld;
+	}
+
+	public static World init(World newWorld){
+		theWorld = newWorld;
 		return theWorld;
 	}
 

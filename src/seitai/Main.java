@@ -1,10 +1,17 @@
 package seitai;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
+
+import javax.swing.event.MenuEvent;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -21,18 +28,23 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.chart.XYChart.Series;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seitai.living.Living;
 import seitai.living.LivingStatus;
@@ -48,9 +60,8 @@ import seitai.world.Pos;
 import seitai.world.Tile;
 import seitai.world.World;
 
-
 /**
- *最初に実行するクラス
+ * 最初に実行するクラス
  *
  */
 public class Main extends Application implements Initializable {
@@ -92,15 +103,25 @@ public class Main extends Application implements Initializable {
 	private TabPane graphTab;
 
 	@FXML
+	private TextField txtFieldWorld;
+
+	@FXML
 	private LineChart<String, Number> numbersChart;
 	@FXML
-	private LineChart<String, Number> lifeChart, attackChart, guardChart, speedChart, sizeChart, spineChart;
+	private LineChart<String, Number> lifeChart, attackChart, guardChart,
+			speedChart, sizeChart, spineChart;
 
-	private XYChart.Series<String, Number> numEater, numFlesh, numGrass, numSuper,lifeEater, lifeFlesh, lifeSuper, atkEater, atkFlesh, atkSuper, grdEater, grdFlesh, grdSuper, spdEater, spdFlesh, spdSuper, sizEater, sizFlesh, sizSuper, spnEater, spnFlesh, spnSuper;
+	private XYChart.Series<String, Number> numEater, numFlesh, numGrass,
+			numSuper, lifeEater, lifeFlesh, lifeSuper, atkEater, atkFlesh,
+			atkSuper, grdEater, grdFlesh, grdSuper, spdEater, spdFlesh,
+			spdSuper, sizEater, sizFlesh, sizSuper, spnEater, spnFlesh,
+			spnSuper;
 
 	private static Canvas CANVAS;
 
 	private static GraphicsContext graphic;
+
+	private static Stage stage;
 
 	// 世界
 	private static World world;
@@ -121,10 +142,10 @@ public class Main extends Application implements Initializable {
 	// 実行時間
 	private static int runningTime = 0;
 
-	//時間が進むか
+	// 時間が進むか
 	private static boolean isTimePass = true;
 
-	//虫眼鏡で選択されている生物
+	// 虫眼鏡で選択されている生物
 	private static Living glassesSelectedLiving = null;
 
 	private static double fps = 16;
@@ -132,6 +153,7 @@ public class Main extends Application implements Initializable {
 	@Override
 	public void start(Stage stage) throws Exception {
 		load();
+		Main.stage = stage;
 		stage.setTitle("Seitai");
 		stage.setScene(new Scene(root));
 		stage.setResizable(false);
@@ -141,6 +163,7 @@ public class Main extends Application implements Initializable {
 		});
 		stage.show();
 		initComponents();
+
 		stage.getScene().getRoot().requestFocus();
 
 		rand = new Random();
@@ -162,13 +185,15 @@ public class Main extends Application implements Initializable {
 					rand.nextInt(world.getHEIGHT()));
 			world.getLivings().add(l);
 		}
-		for(int i = 0; i < 30; i++){
-			Living l = FleshEater.getCommonInstance(rand.nextInt(world.getWIDTH()),
+		for (int i = 0; i < 30; i++) {
+			Living l = FleshEater.getCommonInstance(
+					rand.nextInt(world.getWIDTH()),
 					rand.nextInt(world.getHEIGHT()));
 			world.getLivings().add(l);
 		}
-		for(int i = 0; i < 15; i++){
-			Living l = SuperEater.getCommonInstance(rand.nextInt(world.getWIDTH()),
+		for (int i = 0; i < 15; i++) {
+			Living l = SuperEater.getCommonInstance(
+					rand.nextInt(world.getWIDTH()),
 					rand.nextInt(world.getHEIGHT()));
 			world.getLivings().add(l);
 		}
@@ -186,11 +211,13 @@ public class Main extends Application implements Initializable {
 		register(parentSplit);
 		editType.requestFocus();
 		editType.getItems().addAll(EditType.values());
-////なぜ使えない
-//		initSerieses("eater", numEater, lifeEater, atkEater, grdEater, spdEater, sizEater, spnEater);
-//
-//		initSerieses("flesheater", numFlesh, lifeFlesh, atkFlesh, grdFlesh, spdFlesh, sizFlesh, spnFlesh);
-//
+		// //なぜ使えない
+		// initSerieses("eater", numEater, lifeEater, atkEater, grdEater,
+		// spdEater, sizEater, spnEater);
+		//
+		// initSerieses("flesheater", numFlesh, lifeFlesh, atkFlesh, grdFlesh,
+		// spdFlesh, sizFlesh, spnFlesh);
+		//
 		String e = "eater";
 		String fe = "flesheater";
 		String g = "grass";
@@ -221,8 +248,7 @@ public class Main extends Application implements Initializable {
 
 		numGrass = initSeries(g);
 
-
-		numbersChart.getData().addAll(numFlesh,numEater, numGrass, numSuper);
+		numbersChart.getData().addAll(numFlesh, numEater, numGrass, numSuper);
 		numbersChart.setTitle("生物数");
 
 		lifeChart.getData().addAll(lifeFlesh, lifeEater, lifeSuper);
@@ -243,22 +269,21 @@ public class Main extends Application implements Initializable {
 		spineChart.getData().addAll(spnFlesh, spnEater, spnSuper);
 		spineChart.setTitle("平均棘");
 
-
 	}
 
-	private void register(Node n){
+	private void register(Node n) {
 		n.setOnKeyPressed((KeyEvent event) -> {
 			keyPressed(event);
 		});
 		n.setOnKeyReleased((KeyEvent event) -> {
 			keyReleased(event);
 		});
-		n.setOnKeyTyped((KeyEvent event) ->{
+		n.setOnKeyTyped((KeyEvent event) -> {
 			keyTyped(event);
 		});
 	}
 
-	private Series<String,Number> initSeries(String name){
+	private Series<String, Number> initSeries(String name) {
 		Series<String, Number> series = new Series<>();
 		series.setName(name);
 		return series;
@@ -291,9 +316,10 @@ public class Main extends Application implements Initializable {
 	 */
 	private void update() {
 		// 実行時間をプラス
-		if(isTimePass)runningTime++;
+		if (isTimePass)
+			runningTime++;
 
-		//if(world.eater == 0 && world.flesh == 0)spawnAnimals();
+		// if(world.eater == 0 && world.flesh == 0)spawnAnimals();
 		// キー入力に応じてカメラ移動
 		moveCam();
 		// 画面のクリア
@@ -303,79 +329,163 @@ public class Main extends Application implements Initializable {
 	}
 
 	private void updateWindow(GraphicsContext g) {
-		numbers.setText("Grass: " +  world.grass/ 1000 + "k  Eater: " + world.eater + " Flesh: " + world.flesh + " Super: " + world.superE);
+		numbers.setText("Grass: " + world.grass / 1000 + "k  Eater: "
+				+ world.eater + " Flesh: " + world.flesh + " Super: "
+				+ world.superE);
 		int min = (runningTime / 16) / 60;
 		int sec = (runningTime / 16) % 60;
 		time.setText("実行時間: " + runningTime + "フレーム( " + min + "分" + sec + "秒)");
 		timeSpeed.setText("時間速度: " + fps + " ( " + fps / 16 + " 倍速)");
 		updateCharts();
-		if(glassesSelectedLiving != null){
+		if (glassesSelectedLiving != null) {
 			Living selected = glassesSelectedLiving;
 			StringBuilder builder = new StringBuilder();
 			String br = System.getProperty("line.separator");
-			appendAll(builder, selected.getClass().getName(), (selected.isDead() ? "_Dead" : ""), br,
-					"体力:", selected.getStatus().get(LivingStatus.HP), "/", selected.getStatus().get(LivingStatus.HP_MAX), br
-					, "年齢:",selected.getAge(),br
-					, "寿命:",selected.getStatus().get(LivingStatus.LIFE),br
-					, "攻撃:",selected.getStatus().get(LivingStatus.ATTACK),br
-					, "防御:",selected.getStatus().get(LivingStatus.GUARD),br
-					, "大きさ:",selected.getStatus().get(LivingStatus.SIZE),br
-					, "速さ:",selected.getStatus().get(LivingStatus.SPEED),br
-					, "棘:",selected.getStatus().get(LivingStatus.SPINE),br
-					, "ai: ", br
-					);
-			for(int i = AITable.AI_MAX; i > 0; i--){
+			appendAll(builder, selected.getClass().getName(),
+					(selected.isDead() ? "_Dead" : ""), br, "体力:", selected
+							.getStatus().get(LivingStatus.HP), "/", selected
+							.getStatus().get(LivingStatus.HP_MAX), br, "年齢:",
+					selected.getAge(), br, "寿命:",
+					selected.getStatus().get(LivingStatus.LIFE), br, "攻撃:",
+					selected.getStatus().get(LivingStatus.ATTACK), br, "防御:",
+					selected.getStatus().get(LivingStatus.GUARD), br, "大きさ:",
+					selected.getStatus().get(LivingStatus.SIZE), br, "速さ:",
+					selected.getStatus().get(LivingStatus.SPEED), br, "棘:",
+					selected.getStatus().get(LivingStatus.SPINE), br, "ai: ",
+					br);
+			for (int i = AITable.AI_MAX; i > 0; i--) {
 				AI ai = selected.getAI().getAI(i);
-				if(!(ai instanceof AINone))
-					appendAll(builder,
-						i, ":" , ai.toString(), br);
+				if (!(ai instanceof AINone))
+					appendAll(builder, i, ":", ai.toString(), br);
 			}
 
 			glassesInfo.setText(builder.toString());
-			cameraPos = Pos.getTile(selected.getPos().getX() - 50 * 7, selected.getPos().getY() - 50 * 5);
-			Pos p = Pos.toWindowPos(selected.getPos().getX(), selected.getPos().getY());
+			cameraPos = Pos.getTile(selected.getPos().getX() - 50 * 7, selected
+					.getPos().getY() - 50 * 5);
+			Pos p = Pos.toWindowPos(selected.getPos().getX(), selected.getPos()
+					.getY());
 			g.setFill(Color.PURPLE);
 			g.fillRect(p.getX() - 10, p.getY() - 10, 10, 10);
 		}
 	}
 
-	private void updateCharts(){
-		if(isRunning && runningTime % (16 * 5) == 0){
+	private void updateCharts() {
+		if (isRunning && runningTime % (16 * 5) == 0) {
 
-			numFlesh.getData().add(new XYChart.Data<String, Number>( Integer.toString(runningTime / 16), world.flesh));
-			numEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater));
-			numGrass.getData().add(new XYChart.Data<String, Number>( Integer.toString(runningTime / 16), world.grass / 1000));
-			numSuper.getData().add(new XYChart.Data<String, Number>( Integer.toString(runningTime / 16), world.superE / 1000));
+			numFlesh.getData().add(
+					new XYChart.Data<String, Number>(Integer
+							.toString(runningTime / 16), world.flesh));
+			numEater.getData().add(
+					new Data<String, Number>(
+							Integer.toString(runningTime / 16), world.eater));
+			numGrass.getData().add(
+					new XYChart.Data<String, Number>(Integer
+							.toString(runningTime / 16), world.grass / 1000));
+			numSuper.getData().add(
+					new XYChart.Data<String, Number>(Integer
+							.toString(runningTime / 16), world.superE / 1000));
 
-			lifeEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ? (double) Eater.allLife / (double)world.eater : 0.0));
-			lifeFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.flesh > 0 ?  (double)FleshEater.allLife / (double)world.flesh : 0.0));
-			lifeSuper.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.superE > 0 ?  (double)SuperEater.allLife / (double)world.superE : 0.0));
+			lifeEater.getData().add(
+					new Data<String, Number>(
+							Integer.toString(runningTime / 16),
+							world.eater > 0 ? (double) Eater.allLife
+									/ (double) world.eater : 0.0));
+			lifeFlesh.getData().add(
+					new Data<String, Number>(
+							Integer.toString(runningTime / 16),
+							world.flesh > 0 ? (double) FleshEater.allLife
+									/ (double) world.flesh : 0.0));
+			lifeSuper.getData().add(
+					new Data<String, Number>(
+							Integer.toString(runningTime / 16),
+							world.superE > 0 ? (double) SuperEater.allLife
+									/ (double) world.superE : 0.0));
 
-			atkEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ?  (double)Eater.allAtk / (double)world.eater : 0.0));
-			atkFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime/16), world.flesh > 0 ?  (double)FleshEater.allAtk / (double)world.flesh : 0.0));
-			atkSuper.getData().add(new Data<String, Number>(Integer.toString(runningTime/16), world.superE > 0 ?  (double)SuperEater.allAtk / (double)world.superE : 0.0));
+			atkEater.getData().add(
+					new Data<String, Number>(
+							Integer.toString(runningTime / 16),
+							world.eater > 0 ? (double) Eater.allAtk
+									/ (double) world.eater : 0.0));
+			atkFlesh.getData().add(
+					new Data<String, Number>(
+							Integer.toString(runningTime / 16),
+							world.flesh > 0 ? (double) FleshEater.allAtk
+									/ (double) world.flesh : 0.0));
+			atkSuper.getData().add(
+					new Data<String, Number>(
+							Integer.toString(runningTime / 16),
+							world.superE > 0 ? (double) SuperEater.allAtk
+									/ (double) world.superE : 0.0));
 
-			grdEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ?  (double)Eater.allGrd / (double)world.eater : 0.0));
-			grdFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.flesh > 0 ?  (double)FleshEater.allGrd / (double)world.flesh : 0.0));
-			grdSuper.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.superE > 0 ?  (double)SuperEater.allGrd / (double)world.superE : 0.0));
+			grdEater.getData().add(
+					new Data<String, Number>(
+							Integer.toString(runningTime / 16),
+							world.eater > 0 ? (double) Eater.allGrd
+									/ (double) world.eater : 0.0));
+			grdFlesh.getData().add(
+					new Data<String, Number>(
+							Integer.toString(runningTime / 16),
+							world.flesh > 0 ? (double) FleshEater.allGrd
+									/ (double) world.flesh : 0.0));
+			grdSuper.getData().add(
+					new Data<String, Number>(
+							Integer.toString(runningTime / 16),
+							world.superE > 0 ? (double) SuperEater.allGrd
+									/ (double) world.superE : 0.0));
 
-			spdEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ? (double) Eater.allSpd / (double)world.eater : 0.0));
-			spdFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.flesh > 0 ?  (double) FleshEater.allSpd / (double)world.flesh : 0.0));
-			spdSuper.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.superE > 0 ?  (double) SuperEater.allSpd / (double)world.superE : 0.0));
+			spdEater.getData().add(
+					new Data<String, Number>(
+							Integer.toString(runningTime / 16),
+							world.eater > 0 ? (double) Eater.allSpd
+									/ (double) world.eater : 0.0));
+			spdFlesh.getData().add(
+					new Data<String, Number>(
+							Integer.toString(runningTime / 16),
+							world.flesh > 0 ? (double) FleshEater.allSpd
+									/ (double) world.flesh : 0.0));
+			spdSuper.getData().add(
+					new Data<String, Number>(
+							Integer.toString(runningTime / 16),
+							world.superE > 0 ? (double) SuperEater.allSpd
+									/ (double) world.superE : 0.0));
 
-			sizEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ?  (double)Eater.allSiz / (double)world.eater : 0.0));
-			sizFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.flesh > 0 ?  (double)FleshEater.allSiz / (double)world.flesh : 0.0));
-			sizSuper.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.superE > 0 ?  (double)SuperEater.allSiz / (double)world.superE : 0.0));
+			sizEater.getData().add(
+					new Data<String, Number>(
+							Integer.toString(runningTime / 16),
+							world.eater > 0 ? (double) Eater.allSiz
+									/ (double) world.eater : 0.0));
+			sizFlesh.getData().add(
+					new Data<String, Number>(
+							Integer.toString(runningTime / 16),
+							world.flesh > 0 ? (double) FleshEater.allSiz
+									/ (double) world.flesh : 0.0));
+			sizSuper.getData().add(
+					new Data<String, Number>(
+							Integer.toString(runningTime / 16),
+							world.superE > 0 ? (double) SuperEater.allSiz
+									/ (double) world.superE : 0.0));
 
-			spnEater.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.eater > 0 ?  (double)Eater.allSpn / (double)world.eater : 0.0));
-			spnFlesh.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.flesh > 0 ?  (double)FleshEater.allSpn / (double)world.flesh : 0.0));
-			spnSuper.getData().add(new Data<String, Number>(Integer.toString(runningTime / 16), world.superE > 0 ?  (double)SuperEater.allSpn / (double)world.superE : 0.0));
+			spnEater.getData().add(
+					new Data<String, Number>(
+							Integer.toString(runningTime / 16),
+							world.eater > 0 ? (double) Eater.allSpn
+									/ (double) world.eater : 0.0));
+			spnFlesh.getData().add(
+					new Data<String, Number>(
+							Integer.toString(runningTime / 16),
+							world.flesh > 0 ? (double) FleshEater.allSpn
+									/ (double) world.flesh : 0.0));
+			spnSuper.getData().add(
+					new Data<String, Number>(
+							Integer.toString(runningTime / 16),
+							world.superE > 0 ? (double) SuperEater.allSpn
+									/ (double) world.superE : 0.0));
 
 		}
 	}
 
-	private void appendAll(StringBuilder builder, Object... strings){
-		for(Object str : strings){
+	private void appendAll(StringBuilder builder, Object... strings) {
+		for (Object str : strings) {
 			builder.append(str);
 		}
 	}
@@ -384,8 +494,9 @@ public class Main extends Application implements Initializable {
 	protected void keyPressed(KeyEvent ev) {
 		KeyCode key = ev.getCode();
 
-		if(key == KeyCode.UP || key == KeyCode.DOWN || key == KeyCode.RIGHT || key == KeyCode.LEFT)
-		glassesSelectedLiving = null;
+		if (key == KeyCode.UP || key == KeyCode.DOWN || key == KeyCode.RIGHT
+				|| key == KeyCode.LEFT)
+			glassesSelectedLiving = null;
 
 		switch (key) {
 		case UP:
@@ -431,14 +542,15 @@ public class Main extends Application implements Initializable {
 	@FXML
 	protected void keyTyped(KeyEvent ev) {
 		String key = ev.getCharacter();
-		switch(key){
-		case "t":    //時間停止
+		switch (key) {
+		case "t": // 時間停止
 			isTimePass = !isTimePass;
 			break;
-		case "g":    //半数絶滅
-			for(int i = 0; i < world.getLivings().size(); i++){
-				if(rand.nextBoolean()){
-					world.getLivings().get(i).getStatus().set(LivingStatus.HP, -1000000000);
+		case "g": // 半数絶滅
+			for (int i = 0; i < world.getLivings().size(); i++) {
+				if (rand.nextBoolean()) {
+					world.getLivings().get(i).getStatus()
+							.set(LivingStatus.HP, -1000000000);
 				}
 			}
 			break;
@@ -455,10 +567,11 @@ public class Main extends Application implements Initializable {
 	}
 
 	@FXML
-	protected void onMouseClicked(MouseEvent ev){
+	protected void onMouseClicked(MouseEvent ev) {
 		EditType type = editType.getValue();
-		if(type == null)return;
-		switch(type){
+		if (type == null)
+			return;
+		switch (type) {
 		case Glasses:
 			setSelectedLiving(ev);
 			break;
@@ -466,15 +579,15 @@ public class Main extends Application implements Initializable {
 			deleteLiving(ev, false);
 			break;
 		case FleshEater:
-			int x = (int)ev.getX();
-			int y = (int)ev.getY();
+			int x = (int) ev.getX();
+			int y = (int) ev.getY();
 			x += getCameraPos().getX() * 50;
 			y += getCameraPos().getY() * 50;
 			world.getLivings().add(FleshEater.getCommonInstance(x, y));
 			break;
 		case GrasssEater:
-			x = (int)ev.getX();
-			y = (int)ev.getY();
+			x = (int) ev.getX();
+			y = (int) ev.getY();
 			x += getCameraPos().getX() * 50;
 			y += getCameraPos().getY() * 50;
 			world.getLivings().add(Eater.getCommonInstance(x, y));
@@ -483,31 +596,31 @@ public class Main extends Application implements Initializable {
 			deleteLiving(ev, true);
 			break;
 		case SuperEater:
-			x = (int)ev.getX();
-			y = (int)ev.getY();
+			x = (int) ev.getX();
+			y = (int) ev.getY();
 			x += getCameraPos().getX() * 50;
 			y += getCameraPos().getY() * 50;
 			world.getLivings().add(SuperEater.getCommonInstance(x, y));
 			break;
 		case SpawnerE:
-			x = (int)ev.getX();
-			y = (int)ev.getY();
+			x = (int) ev.getX();
+			y = (int) ev.getY();
 			x += getCameraPos().getX() * 50;
 			y += getCameraPos().getY() * 50;
 			Spawner espawner = new Spawner(x, y, 5, Eater.class);
 			world.getLivings().add(espawner);
 			break;
 		case SpawnerFE:
-			x = (int)ev.getX();
-			y = (int)ev.getY();
+			x = (int) ev.getX();
+			y = (int) ev.getY();
 			x += getCameraPos().getX() * 50;
 			y += getCameraPos().getY() * 50;
 			Spawner fespawner = new Spawner(x, y, 5, FleshEater.class);
 			world.getLivings().add(fespawner);
 			break;
 		case SpawnerSE:
-			x = (int)ev.getX();
-			y = (int)ev.getY();
+			x = (int) ev.getX();
+			y = (int) ev.getY();
 			x += getCameraPos().getX() * 50;
 			y += getCameraPos().getY() * 50;
 			Spawner sespawner = new Spawner(x, y, 5, SuperEater.class);
@@ -517,7 +630,7 @@ public class Main extends Application implements Initializable {
 		}
 	}
 
-	private void setSelectedLiving(MouseEvent ev){
+	private void setSelectedLiving(MouseEvent ev) {
 		int x = (int) Math.round(ev.getX());
 		int y = (int) Math.round(ev.getY());
 		x += getCameraPos().getX() * 50;
@@ -525,14 +638,14 @@ public class Main extends Application implements Initializable {
 		Tile tile = Pos.getTile(x, y);
 		List<Living> list = tile.getLivings();
 		boolean containsSelected = false;
-		for(int i = 0; i < list.size(); i++){
+		for (int i = 0; i < list.size(); i++) {
 			Living l = list.get(i);
-			if(l == glassesSelectedLiving){
+			if (l == glassesSelectedLiving) {
 				containsSelected = true;
 				continue;
-				}
+			}
 			Pos p = l.getPos();
-			if(Math.abs(p.getX() - x) < 20 && Math.abs(p.getY() - y) < 20){
+			if (Math.abs(p.getX() - x) < 20 && Math.abs(p.getY() - y) < 20) {
 				glassesSelectedLiving = l;
 				return;
 			}
@@ -540,7 +653,7 @@ public class Main extends Application implements Initializable {
 		glassesSelectedLiving = containsSelected ? glassesSelectedLiving : null;
 	}
 
-	private void deleteLiving(MouseEvent ev, boolean deleteAll){
+	private void deleteLiving(MouseEvent ev, boolean deleteAll) {
 		int x = (int) Math.round(ev.getX());
 		int y = (int) Math.round(ev.getY());
 		x += getCameraPos().getX() * 50;
@@ -548,15 +661,15 @@ public class Main extends Application implements Initializable {
 		Tile tile = Pos.getTile(x, y);
 		List<Living> list = tile.getLivings();
 
-		for(int i = 0; i < list.size(); i++){
+		for (int i = 0; i < list.size(); i++) {
 			Living l = list.get(i);
 			Pos p = l.getPos();
-			if(!deleteAll){
-				if(Math.abs(p.getX() - x) < 20 && Math.abs(p.getY() - y) < 20){
+			if (!deleteAll) {
+				if (Math.abs(p.getX() - x) < 20 && Math.abs(p.getY() - y) < 20) {
 					l.getStatus().set(LivingStatus.HP, -100000000);
 					return;
 				}
-			}else{
+			} else {
 				l.getStatus().set(LivingStatus.HP, -1000000000);
 			}
 		}
@@ -579,6 +692,55 @@ public class Main extends Application implements Initializable {
 			x = x <= 0 ? x : x - 1;
 		}
 		cameraPos = world.getTiles()[x][y];
+	}
+
+	@FXML
+	private void loadWorld() {
+		String load = txtFieldWorld.textProperty().get();
+		if (load == "")return;
+		if (!load.endsWith(".seitai")) {
+			System.out.println("拡張子は.seitaiで無ければなりません");
+			return;
+		}
+		File f = new File(load);
+		if (!f.exists()) {
+			System.out.println("指定されたファイルが存在しません");
+			return;
+		}
+
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f))) {
+			World deWorld = (World) ois.readObject();
+			this.world = World.init(deWorld);
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+			return;
+		}
+	}
+
+	@FXML
+	private void saveWorld() {
+
+		String save = txtFieldWorld.textProperty().get();
+		if (save == "")return;
+		if (!save.endsWith(".seitai"))return;
+
+		File f = new File(save);
+		try {
+			if (!f.exists() && !f.createNewFile()) {
+				System.out.println("指定されたファイルの作成に失敗しました");
+				return;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f))) {
+			oos.writeObject(world);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
 	}
 
 	class MainThread implements Runnable {
@@ -608,8 +770,10 @@ public class Main extends Application implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 
 	}
+
 	/**
 	 * 画面に表示される一番左上のタイルを返す
+	 *
 	 * @return画面左上のタイル
 	 */
 	public static Tile getCameraPos() {
@@ -622,6 +786,7 @@ public class Main extends Application implements Initializable {
 
 	/**
 	 * すべての乱数生成に使用するRandomインスタンスを返す
+	 *
 	 * @return
 	 */
 	public static Random getRandom() {
@@ -630,6 +795,7 @@ public class Main extends Application implements Initializable {
 
 	/**
 	 * 実行開始からのフレーム数を返す 16フレーム=1秒
+	 *
 	 * @return 実行時間(isTimePass() == false の時は増加しない)
 	 */
 	public static int getTime() {
@@ -638,11 +804,11 @@ public class Main extends Application implements Initializable {
 
 	/**
 	 * 時間が経過するかを返す
+	 *
 	 * @return
 	 */
-	public static boolean isTimePass(){
+	public static boolean isTimePass() {
 		return isTimePass;
 	}
-
 
 }

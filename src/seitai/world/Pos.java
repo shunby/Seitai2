@@ -1,12 +1,14 @@
 package seitai.world;
 
+import java.io.Serializable;
+
 import seitai.Main;
 
 /**
  * World内のある一点の座標を表す
  *
  */
-public class Pos {
+public class Pos implements Serializable {
 
 	/**
 	 * 座標
