@@ -119,7 +119,7 @@
                               </Tab>
                            </tabs>
                         </TabPane>
-                        <TextField fx:id="txtFieldWorld" text="C:\seitai\newWorld.seitai" />
+                        <TextField fx:id="txtFieldWorld" text="C:/seitai/newWorld.seitai" />
                         <Button mnemonicParsing="false" onAction="#saveWorld" prefHeight="25.0" prefWidth="217.0" text="Save World" />
                         <Button mnemonicParsing="false" onAction="#loadWorld" prefHeight="25.0" prefWidth="222.0" text="Load World" />
                      </children>

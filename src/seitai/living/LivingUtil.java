@@ -176,7 +176,6 @@ public class LivingUtil {
     			AI ai =getRandomAI(child);
     			childAI.putAI(priority, ai);
     		}else if(rand.nextBoolean()){
-    			System.out.println(ai1.getAI(3));
     			childAI.putAI(priority, ai1.getAI(priority).getCopyWithNewOwner(child));
     		}else{
     			childAI.putAI(priority, ai2.getAI(priority).getCopyWithNewOwner(child));

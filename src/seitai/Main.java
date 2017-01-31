@@ -711,6 +711,11 @@ public class Main extends Application implements Initializable {
 		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f))) {
 			World deWorld = (World) ois.readObject();
 			this.world = World.init(deWorld);
+			SaveOption opt = (SaveOption)ois.readObject();
+			this.rand = opt.getRand();
+			this.isRunning = opt.isRunning();
+			this.runningTime = opt.getRunningTime();
+			this.isTimePass = opt.isTimePass();
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 			return;
@@ -735,12 +740,16 @@ public class Main extends Application implements Initializable {
 			return;
 		}
 
-		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f))) {
-			oos.writeObject(world);
+		SaveOption opt = new SaveOption(rand, isRunning, runningTime, isTimePass);
+		try (ObjectOutputStream oos1 = new ObjectOutputStream(new FileOutputStream(f))) {
+			oos1.writeObject(world);
+			oos1.writeObject(opt);
+			oos1.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
 		}
+
 	}
 
 	class MainThread implements Runnable {
