@@ -152,7 +152,7 @@ public class Main extends Application implements Initializable {
 
 	private static double fps = 16;
 
-	private static boolean doSerial = true;
+	private static boolean doSerial = false;
 
 	@Override
 	public void start(Stage stage) throws Exception {
