@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
 import java.util.ResourceBundle;
 
@@ -702,37 +704,54 @@ public class Main extends Application implements Initializable {
 			System.out.println("拡張子は.seitaiで無ければなりません");
 			return;
 		}
-		File f = new File(load);
-		if (!f.exists()) {
+		File worldFile = new File(load);
+		File propertiesFile = new File(worldFile.getParentFile().getPath() + "/" + worldFile.getName() + "_option.properties");
+
+		if (!worldFile.exists() || !propertiesFile.exists()) {
 			System.out.println("指定されたファイルが存在しません");
 			return;
 		}
 
-		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f))) {
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(worldFile))) {
 			World deWorld = (World) ois.readObject();
-			this.world = World.init(deWorld);
-			SaveOption opt = (SaveOption)ois.readObject();
-			this.rand = opt.getRand();
-			this.isRunning = opt.isRunning();
-			this.runningTime = opt.getRunningTime();
-			this.isTimePass = opt.isTimePass();
+			world = World.init(deWorld);
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 			return;
+		}
+
+
+		try(InputStream ins = new FileInputStream(propertiesFile)){
+			Properties properties = new Properties();
+			properties.load(ins);
+			isTimePass = Boolean.valueOf(properties.getProperty("isTimePass"));
+			runningTime = Integer.valueOf(properties.getProperty("runningTime"));
+
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 	}
 
 	@FXML
 	private void saveWorld() {
-
 		String save = txtFieldWorld.textProperty().get();
 		if (save == "")return;
 		if (!save.endsWith(".seitai"))return;
 
-		File f = new File(save);
+		File worldFile = new File(save);
+		File propertiesFile = new File(worldFile.getParentFile().getPath()  + "/"+ worldFile.getName() + "_option.properties");
 		try {
-			if (!f.exists() && !f.createNewFile()) {
-				System.out.println("指定されたファイルの作成に失敗しました");
+			if(worldFile.exists()){
+				worldFile.delete();
+			}
+			if(propertiesFile.exists()){
+				propertiesFile.delete();
+			}
+
+			if (!worldFile.createNewFile()) {
+				return;
+			}
+			if(!propertiesFile.createNewFile()){
 				return;
 			}
 		} catch (IOException e) {
@@ -740,14 +759,28 @@ public class Main extends Application implements Initializable {
 			return;
 		}
 
-		SaveOption opt = new SaveOption(rand, isRunning, runningTime, isTimePass);
-		try (ObjectOutputStream oos1 = new ObjectOutputStream(new FileOutputStream(f))) {
+		try (ObjectOutputStream oos1 = new ObjectOutputStream(new FileOutputStream(worldFile))) {
 			oos1.writeObject(world);
-			oos1.writeObject(opt);
 			oos1.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
+		}
+
+		try(InputStream ins = new FileInputStream(propertiesFile)){
+			Properties properties = new Properties();
+			properties.load(ins);
+			properties.setProperty("isTimePass", Boolean.toString(isTimePass));
+			properties.setProperty("runningTime", Integer.toString(runningTime));
+
+			try(FileOutputStream fos = new FileOutputStream(propertiesFile)){
+				properties.store(fos, "settings");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 
 	}
