@@ -139,7 +139,7 @@ public class Main extends Application implements Initializable {
 	private static Random rand;
 
 	// 画面が表示されているか
-	private boolean isRunning = true;
+	private static  boolean isRunning = true;
 
 	// 実行時間
 	private static int runningTime = 0;
@@ -151,6 +151,8 @@ public class Main extends Application implements Initializable {
 	private static Living glassesSelectedLiving = null;
 
 	private static double fps = 16;
+
+	private static boolean doSerial = true;
 
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -176,6 +178,8 @@ public class Main extends Application implements Initializable {
 
 		Thread th = new Thread(new MainThread());
 		th.start();
+
+		Serial.init();
 	}
 
 	/**
@@ -587,7 +591,7 @@ public class Main extends Application implements Initializable {
 			y += getCameraPos().getY() * 50;
 			world.getLivings().add(FleshEater.getCommonInstance(x, y));
 			break;
-		case GrasssEater:
+		case GrassEater:
 			x = (int) ev.getX();
 			y = (int) ev.getY();
 			x += getCameraPos().getX() * 50;
@@ -726,6 +730,8 @@ public class Main extends Application implements Initializable {
 			properties.load(ins);
 			isTimePass = Boolean.valueOf(properties.getProperty("isTimePass"));
 			runningTime = Integer.valueOf(properties.getProperty("runningTime"));
+			doSerial = Boolean.valueOf(properties.getProperty("doSerial"));
+			Serial.init();
 
 		}catch(Exception e){
 			e.printStackTrace();
@@ -772,6 +778,7 @@ public class Main extends Application implements Initializable {
 			properties.load(ins);
 			properties.setProperty("isTimePass", Boolean.toString(isTimePass));
 			properties.setProperty("runningTime", Integer.toString(runningTime));
+			properties.setProperty("doSerial", Boolean.toString(doSerial));
 
 			try(FileOutputStream fos = new FileOutputStream(propertiesFile)){
 				properties.store(fos, "settings");
@@ -784,6 +791,12 @@ public class Main extends Application implements Initializable {
 		}
 
 	}
+
+	public static boolean isRunning() {
+		return isRunning;
+	}
+
+
 
 	class MainThread implements Runnable {
 		public void run() {
@@ -851,6 +864,10 @@ public class Main extends Application implements Initializable {
 	 */
 	public static boolean isTimePass() {
 		return isTimePass;
+	}
+
+	public static boolean doSerial() {
+		return doSerial;
 	}
 
 }
