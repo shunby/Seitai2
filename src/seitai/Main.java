@@ -59,8 +59,10 @@ import seitai.living.eater.SuperEater;
 import seitai.living.plant.Plant;
 import seitai.living.spawner.Spawner;
 import seitai.world.Pos;
-import seitai.world.Tile;
 import seitai.world.World;
+import seitai.world.tile.Forest;
+import seitai.world.tile.Plain;
+import seitai.world.tile.Tile;
 
 /**
  * 最初に実行するクラス
@@ -304,7 +306,8 @@ public class Main extends Application implements Initializable {
 		root = loader.load();
 
 		// 画像等読み込み
-		Tile.image = loadImage("res/image/tile/Tile.png");
+		Plain.image = loadImage("res/image/tile/Plain.png");
+		Forest.image = loadImage("res/image/tile/Forest.png");
 		Living.image = loadImage("res/image/living/Plant.png");
 		Plant.image = loadImage("res/image/living/Plant.png");
 		Eater.image = loadImage("res/image/living/Eater.png");
@@ -801,8 +804,22 @@ public class Main extends Application implements Initializable {
 		switch(text){
 		case "serialStart":
 			System.out.println("fdffd");
-			Serial.init();
+			if(doSerial)Serial.init();
 			break;
+		case "TJ":
+			FleshEater.image = loadImage("res/image/living/TJFace.png");
+			break;
+		case "nezieater":
+			Tile.image = loadImage("res/image/living/bolt.png");
+			break;
+		case "Mr.N":
+			SuperEater.image = loadImage("res/image/living/NFace.png");
+			break;
+		case "normal":
+			Eater.image = loadImage("res/image/living/Eater.png");
+			FleshEater.image = loadImage("res/image/living/FleshEater.png");
+			SuperEater.image = loadImage("res/image/living/SuperEater.png");
+			Plain.image = loadImage("res/image/tile/Plain.png");
 		default:
 			return false;
 		}

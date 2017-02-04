@@ -5,13 +5,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
+
+
+
+import java.util.Random;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import seitai.Main;
 import seitai.living.Living;
 import seitai.living.eater.Eater;
 import seitai.living.eater.FleshEater;
 import seitai.living.eater.SuperEater;
 import seitai.living.plant.Plant;
+import seitai.world.tile.Forest;
+import seitai.world.tile.Plain;
+import seitai.world.tile.Tile;
 
 
 public class World implements Serializable{
@@ -73,7 +83,19 @@ public class World implements Serializable{
 		tiles = new Tile[WIDTH/50][HEIGHT/50];
 		for(int w = 0; w < WIDTH/50; w++){
 			for(int h = 0; h < HEIGHT/50; h++){
-				Tile t = new Tile(this, w, h);
+				Tile t = null;
+				Random r = Main.getRandom();
+				switch(r.nextInt(5)){
+				case 0:
+					t = new Forest(this, w, h, 1000);
+					break;
+				case 1:
+				case 2:
+				case 3:
+				case 4:
+					t = new Plain(this, w, h, 1000);
+					break;
+				}
 				tiles[w][h] = t;
 				grass += t.getGrass();
 			}

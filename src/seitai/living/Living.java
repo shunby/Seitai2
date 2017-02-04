@@ -9,8 +9,8 @@ import javafx.scene.paint.Color;
 import seitai.Main;
 import seitai.living.ai.AITable;
 import seitai.world.Pos;
-import seitai.world.Tile;
 import seitai.world.World;
+import seitai.world.tile.Tile;
 
 /**
  * ある一匹の生物を表す

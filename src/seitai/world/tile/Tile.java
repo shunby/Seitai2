@@ -1,4 +1,4 @@
-package seitai.world;
+package seitai.world.tile;
 
 import javafx.scene.paint.Color;
 
@@ -12,41 +12,47 @@ import javafx.scene.image.Image;
 import seitai.Main;
 import seitai.living.Living;
 import seitai.living.LivingStatus;
+import seitai.world.Pos;
+import seitai.world.World;
 
 /**
  * ワールド上のタイルを表す
  * 世界は広いため、分割して処理をすることで速度を上げる
  */
-public class Tile implements Serializable {
+public abstract class Tile implements Serializable {
 
 	public static Image image;
 
 	/**
 	 * 子のタイルが何番目のタイルに当たるか(World.getTileのインデックス)
 	 */
-	private int x,y;
+	protected int x,y;
 
 	/**
 	 * このタイル上のLiving
 	 */
-	private List<Living> livings;
+	protected List<Living> livings;
 
 	/**
 	 * 子のタイルに生えている草の数
 	 */
-	private int grass;
+	protected int grass, wet, high, temperature, visibility;
 
 	/**
 	 * このタイルのある世界
 	 *
 	 */
-	private World world;
+	protected World world;
 
-	public Tile(World w, int posx, int posy){
+	public Tile(World w, int posx, int posy, int grass, int wet, int high, int temperature, int visibility){
 		this.x = posx;
 		this.y = posy;
+		this.wet = wet;
+		this.high = high;
+		this.temperature = temperature;
+		this.visibility = visibility;
 		livings = new ArrayList<>();
-		grass = 1000;
+		this.grass = grass;
 		world = w;
 	}
 
@@ -65,12 +71,14 @@ public class Tile implements Serializable {
 			};
 			});
 		}
+
+		grass += (temperature - 20)/10 + (wet - 50) /10 + 10;
+		if(grass > 10000)grass = 10000;
 		onUpdate();
 
 	}
 
 	protected void onUpdate(){
-		this.grass =grass > 10000 ? grass : grass + 10;
 	}
 
 	protected void draw(GraphicsContext g){
@@ -103,5 +111,49 @@ public class Tile implements Serializable {
 		if(grass < 0)grass = 0;
 		this.grass = grass;
 	}
+
+	public int getWet() {
+		return wet;
+	}
+
+	public void setWet(int wet) {
+		if(wet < 0)wet = 0;
+		else if(wet > 100)wet = 100;
+		this.wet = wet;
+	}
+
+	public int getHigh() {
+		return high;
+	}
+
+	public void setHigh(int high) {
+		if(high > 5)high = 5;
+		else if(high < 0)high = 0;
+		this.high = high;
+	}
+
+	public int getTemperature() {
+		return temperature;
+	}
+
+	public void setTemperature(int temperature) {
+		if(temperature > 80)temperature = 80;
+		else if(temperature < -40)temperature = -40;
+		this.temperature = temperature;
+	}
+
+	public int getVisibility() {
+		return visibility;
+	}
+
+	public void setVisibility(int visibility) {
+		if(visibility == 0){
+			this.visibility = 0;
+		}else{
+			this.visibility = 1;
+		}
+	}
+
+
 
 }

@@ -45,7 +45,7 @@ import seitai.living.eater.Eater;
 import seitai.living.eater.FleshEater;
 import seitai.living.eater.SuperEater;
 import seitai.world.Pos;
-import seitai.world.Tile;
+import seitai.world.tile.Tile;
 
 public class LivingUtil {
 	/**
@@ -288,6 +288,14 @@ public class LivingUtil {
 	public static Living search(Living living, Class<? extends Living> findClass){
 		Pos p = living.getPos();
 		Set<Tile> tile = new HashSet<>();
+		tile.add(living.getTile());
+		int searchRange = living.getTile().getVisibility() == 0 ? 1 : 3;
+		for(int  i = 0; i < searchRange;i++){
+			for(int j = 0;j < searchRange;j++){
+				Tile t = Pos.getTile(p.getX() - (searchRange/2) * 50 + i * 50 , p.getY() - (searchRange/2) * 50 + j * 50);
+				if(t.getVisibility() != 0)tile.add(t);
+			}
+		}
 		tile.add(living.getTile());
 		tile.add(Pos.getTile(p.getX() + 50, p.getY()));
 		tile.add(Pos.getTile(p.getX() - 50, p.getY()));

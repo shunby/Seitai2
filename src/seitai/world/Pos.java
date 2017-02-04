@@ -3,6 +3,7 @@ package seitai.world;
 import java.io.Serializable;
 
 import seitai.Main;
+import seitai.world.tile.Tile;
 
 /**
  * World内のある一点の座標を表す

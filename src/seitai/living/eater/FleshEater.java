@@ -27,7 +27,7 @@ public class FleshEater extends Living {
 		super(x, y, hpmax, attack, guard, speed, size, spine, 0);
 		//ai.putAI(7, new AIChaseTarget(this, Eater.class));
 		ai.putAI(7, new AIEscapeTarget(this, SuperEater.class));
-		ai.putAI(6, new AIChaseTarget(this, SuperEater.class));
+		ai.putAI(6, new AIChaseTarget(this, Eater.class));
 		ai.putAI(5, new AIRandomMove(this));
 	}
 
@@ -65,10 +65,7 @@ public class FleshEater extends Living {
 			g.strokeLine(p.getX() + spine/2 + siz/2, p.getY() - spine/2 - siz/2, p.getX() - spine/2 - siz/2, p.getY() + spine/2 + siz/2);
 		}
 
-		int colorR = 255;//(int)(status.get(LivingStatus.ATTACK)/32d * 255);
-		int colorG = 0;//(int)(status.get(LivingStatus.SPEED)/32d * 255);
-		int colorB = 0;//(int)(status.get(LivingStatus.GUARD)/32d * 255);
-		g.drawImage(LivingUtil.createChangedImage(image, colorR, colorG, colorB), p.getX() - siz / 2, p.getY() - siz / 2, siz, siz);
+		g.drawImage(image, p.getX() - siz / 2, p.getY() - siz / 2, siz, siz);
 
 
 		g.setFill(Color.YELLOW);

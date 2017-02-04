@@ -105,8 +105,7 @@ public class Serial {
 			@Override
 			public void run() {
 				try{
-				while (!stopFlag && Main.isRunning()) {
-					if(!Main.doSerial())continue;
+				while (Main.doSerial() && !stopFlag && Main.isRunning()) {
 					submit("G:" + world.eater + " F:" + world.flesh +" S:" + world.superE);
 
 					try {
