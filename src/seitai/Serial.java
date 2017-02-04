@@ -104,6 +104,7 @@ public class Serial {
 			//500ms間隔でLCDを更新
 			@Override
 			public void run() {
+				try{
 				while (!stopFlag && Main.isRunning()) {
 					if(!Main.doSerial())continue;
 					submit("G:" + world.eater + " F:" + world.flesh +" S:" + world.superE);
@@ -115,6 +116,11 @@ public class Serial {
 					}
 				}
 				port.close();
+			}catch(Exception e){
+				e.printStackTrace();
+			}finally{
+				port.close();
 			}
+		}
 	}
 }

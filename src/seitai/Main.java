@@ -163,6 +163,7 @@ public class Main extends Application implements Initializable {
 		stage.setResizable(false);
 		stage.setOnCloseRequest(req -> {
 			isRunning = false;
+			System.out.println("closing...");
 			Platform.exit();
 		});
 		stage.show();
@@ -179,7 +180,6 @@ public class Main extends Application implements Initializable {
 		Thread th = new Thread(new MainThread());
 		th.start();
 
-		Serial.init();
 	}
 
 	/**
@@ -704,6 +704,7 @@ public class Main extends Application implements Initializable {
 	private void loadWorld() {
 		String load = txtFieldWorld.textProperty().get();
 		if (load == "")return;
+		if(secretCommands(load))return;
 		if (!load.endsWith(".seitai")) {
 			System.out.println("拡張子は.seitaiで無ければなりません");
 			return;
@@ -731,7 +732,6 @@ public class Main extends Application implements Initializable {
 			isTimePass = Boolean.valueOf(properties.getProperty("isTimePass"));
 			runningTime = Integer.valueOf(properties.getProperty("runningTime"));
 			doSerial = Boolean.valueOf(properties.getProperty("doSerial"));
-			Serial.init();
 
 		}catch(Exception e){
 			e.printStackTrace();
@@ -742,6 +742,7 @@ public class Main extends Application implements Initializable {
 	private void saveWorld() {
 		String save = txtFieldWorld.textProperty().get();
 		if (save == "")return;
+		if(secretCommands(save))return;
 		if (!save.endsWith(".seitai"))return;
 
 		File worldFile = new File(save);
@@ -790,6 +791,22 @@ public class Main extends Application implements Initializable {
 			e.printStackTrace();
 		}
 
+	}
+
+	private boolean secretCommands(String text) {
+		if(!text.startsWith("cmd:"))return false;
+
+		text = text.replace("cmd:", "");
+
+		switch(text){
+		case "serialStart":
+			System.out.println("fdffd");
+			Serial.init();
+			break;
+		default:
+			return false;
+		}
+		return true;
 	}
 
 	public static boolean isRunning() {
