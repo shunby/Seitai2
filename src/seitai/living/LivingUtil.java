@@ -2,11 +2,15 @@ package seitai.living;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.JarURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.IntBuffer;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
@@ -20,6 +24,11 @@ import java.util.Set;
 
 
 
+
+
+
+import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
@@ -307,47 +316,18 @@ public class LivingUtil {
 
 	public static Class<? extends Living> getRandomLivingClass(){
 		Random rand =Main.getRandom();
-		List<Class<?>> classes = null;
-		try {
-			classes = getClasses("seitai.living.eater");
-		} catch (ClassNotFoundException | IOException | URISyntaxException e) {
-			e.printStackTrace();
+		switch(rand.nextInt(3)){
+		case 0:
+			return Eater.class;
+		case 1:
+			return FleshEater.class;
+		case 2:
+			return SuperEater.class;
+		default:
+			return Living.class;
 		}
-		return (Class<? extends Living>) classes.get(rand.nextInt(classes.size()));
 	}
 
-	private static List<Class<?>> getClasses(String packageName)
-			throws IOException, URISyntaxException, ClassNotFoundException {
-		// クラスローダを取得
-		ClassLoader cl = Thread.currentThread().getContextClassLoader();
-
-		// パッケージ配下のリソースを取得（複数の場合あり）
-		Enumeration<URL> e = cl.getResources(packageName.replace(".", "/"));
-
-		// 返却用のリストを宣言
-		List<Class<?>> classes = new ArrayList<>();
-
-		// パッケージ配下のリソースの数だけループ
-		for (; e.hasMoreElements();) {
-
-			// リソースのURLを取得
-			URL url = e.nextElement();
-
-			// URLをファイルオブジェクトに変換
-			File dir = new File(url.getPath());
-
-			// ディレクトリ配下のファイル数分ループ
-			for (String path : dir.list()) {
-
-				// ".class"で終わるファイルのみ返却用のリストに追加
-				if (path.endsWith(".class")) {
-					Class<?> c = Class.forName(packageName + "." + path.substring(0, path.length() - 6));
-					classes.add(c);
-				}
-			}
-		}
-		return classes;
-	}
 
 
 
