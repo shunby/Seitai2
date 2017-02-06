@@ -20,6 +20,7 @@ import seitai.living.eater.FleshEater;
 import seitai.living.eater.SuperEater;
 import seitai.living.plant.Plant;
 import seitai.world.tile.Forest;
+import seitai.world.tile.Mountain;
 import seitai.world.tile.Plain;
 import seitai.world.tile.Tile;
 
@@ -85,7 +86,7 @@ public class World implements Serializable{
 			for(int h = 0; h < HEIGHT/50; h++){
 				Tile t = null;
 				Random r = Main.getRandom();
-				switch(r.nextInt(5)){
+				switch(r.nextInt(6)){
 				case 0:
 					t = new Forest(this, w, h, 1000);
 					break;
@@ -94,6 +95,9 @@ public class World implements Serializable{
 				case 3:
 				case 4:
 					t = new Plain(this, w, h, 1000);
+					break;
+				case 5:
+					t = new Mountain(this, w, h, 1000);
 					break;
 				}
 				tiles[w][h] = t;

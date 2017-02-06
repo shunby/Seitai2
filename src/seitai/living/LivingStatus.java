@@ -82,7 +82,7 @@ public class LivingStatus implements Serializable {
 
 	public Integer getWaste(){
 		if(waste == null)
-			waste = (stats.get(SIZE) + stats.get(SPEED))/10;
+			waste = (stats.get(SIZE) + stats.get(SPEED))/7;
 		return waste;
 	}
 

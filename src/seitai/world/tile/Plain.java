@@ -10,7 +10,7 @@ public class Plain extends Tile {
 	public static Image image;
 
 	public Plain(World w, int posx, int posy, int grass) {
-		super(w, posx, posy, grass, 20, 0, 20, 1);
+		super(w, posx, posy, grass, 20, 1, 20, 1);
 	}
 
 	@Override

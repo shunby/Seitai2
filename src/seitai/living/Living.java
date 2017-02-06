@@ -90,7 +90,9 @@ public abstract class Living implements Serializable {
 		tile = Pos.getTile(pos.getX(), pos.getY());
 		tile.getLivings().add(this);
 
-		status.set(LivingStatus.HP, status.get(LivingStatus.HP) - status.getWaste());
+		int tempDamage = tile.getTemperature() > 40 ? 18 : 0;
+		int highDamage = tile.getHigh() > 3 ? 10 : 0;
+		status.set(LivingStatus.HP, status.get(LivingStatus.HP) - status.getWaste() - highDamage - tempDamage);
 
 		int spine = status.get(LivingStatus.SPINE);
 		if (spine > 0) {

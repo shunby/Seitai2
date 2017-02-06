@@ -61,6 +61,7 @@ import seitai.living.spawner.Spawner;
 import seitai.world.Pos;
 import seitai.world.World;
 import seitai.world.tile.Forest;
+import seitai.world.tile.Mountain;
 import seitai.world.tile.Plain;
 import seitai.world.tile.Tile;
 
@@ -308,6 +309,7 @@ public class Main extends Application implements Initializable {
 		// 画像等読み込み
 		Plain.image = loadImage("res/image/tile/Plain.png");
 		Forest.image = loadImage("res/image/tile/Forest.png");
+		Mountain.image = loadImage("res/image/tile/Mountain.png");
 		Living.image = loadImage("res/image/living/Plant.png");
 		Plant.image = loadImage("res/image/living/Plant.png");
 		Eater.image = loadImage("res/image/living/Eater.png");
