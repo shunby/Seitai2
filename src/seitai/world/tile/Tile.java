@@ -74,6 +74,7 @@ public abstract class Tile implements Serializable {
 
 		grass += (temperature - 20)/2 + (wet - 50)/10 + (3 - high)* 2+ 10;
 		if(grass > 10000)grass = 10000;
+		if(grass < 0)grass = 0;
 		onUpdate();
 
 	}

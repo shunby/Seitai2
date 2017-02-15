@@ -140,6 +140,7 @@ public abstract class Living implements Serializable {
 	 */
 	public void death() {
 		onDeath();
+		tile.setGrass(tile.getGrass() + status.get((int)(LivingStatus.HP_MAX * 0.4)));
 		world.getLivings().remove(this);
 		tile.getLivings().remove(this);
 		isDead = true;

@@ -60,7 +60,6 @@ import seitai.living.plant.Plant;
 import seitai.living.spawner.Spawner;
 import seitai.world.Pos;
 import seitai.world.World;
-import seitai.world.tile.Forest;
 import seitai.world.tile.Mountain;
 import seitai.world.tile.Plain;
 import seitai.world.tile.Tile;
@@ -308,7 +307,6 @@ public class Main extends Application implements Initializable {
 
 		// 画像等読み込み
 		Plain.image = loadImage("res/image/tile/Plain.png");
-		Forest.image = loadImage("res/image/tile/Forest.png");
 		Mountain.image = loadImage("res/image/tile/Mountain.png");
 		Living.image = loadImage("res/image/living/Plant.png");
 		Plant.image = loadImage("res/image/living/Plant.png");
@@ -804,10 +802,6 @@ public class Main extends Application implements Initializable {
 		text = text.replace("cmd:", "");
 
 		switch(text){
-		case "serialStart":
-			System.out.println("fdffd");
-			if(doSerial)Serial.init();
-			break;
 		case "TJ":
 			FleshEater.image = loadImage("res/image/living/TJFace.png");
 			break;
