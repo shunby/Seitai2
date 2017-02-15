@@ -1,17 +1,7 @@
 package seitai.living;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.JarURLConnection;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.nio.IntBuffer;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -26,9 +16,6 @@ import java.util.Set;
 
 
 
-
-import java.util.jar.JarFile;
-import java.util.stream.Collectors;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;

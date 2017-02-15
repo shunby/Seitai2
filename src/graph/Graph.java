@@ -1,19 +1,12 @@
 package graph;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.geom.Arc2D;
-import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
-
-import seitai.Main;
 
 public class Graph {
 	static Random r;
